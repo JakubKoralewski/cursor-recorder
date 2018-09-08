@@ -22,13 +22,16 @@ if rerefreshRate:
 else:
     precision = 1
 context = Context(prec=precision + 1)
-print("precision: {}".format(precision))
+print(
+    "Rounding to {} place{}.".format(precision, "" if precision == 1 else "s"), end=" "
+)
 
+fetchAmount = int(1 / refreshRate)
 
 def startMenu():
     print(
-        "The cursor position will be fetched {} times a second.".format(
-            int(1 / refreshRate)
+        "The cursor position will be fetched {} time{} a second.".format(
+            fetchAmount, "" if fetchAmount == 1 else "s"
         )
     )
     input("ENTER to start recording.")
