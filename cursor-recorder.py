@@ -1,31 +1,19 @@
+import atexit
 import ctypes
 import json
 import msvcrt
 import os
 import time
 import re
-from decimal import *  # pylint: disable=unused-import
+from decimal import Decimal, ROUND_HALF_UP  # pylint: disable=unused-import
 
 import pyautogui
 import keyboard
 
-awareness = ctypes.c_int()
-ctypes.windll.shcore.SetProcessDpiAwareness(2)
+# awareness = ctypes.c_int()
+# ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
-refreshRate = 0.1  # Gap between saving cursor position to JSON
-
-# calculate the amount of digits printed after .
-# ex.: 0.3 -> 1, 1 -> 1, 0.001 -> 3
-# useful when refreshRate will be subject to change
-rerefreshRate = re.findall(r"\.(\d+)", (str(refreshRate)))
-if rerefreshRate:
-    precision = len(rerefreshRate[0])
-else:
-    precision = 1
-context = Context(prec=precision + 1)
-print(
-    "Rounding to {} place{}.".format(precision, "" if precision == 1 else "s"), end=" "
-)
+refreshRate = 0.1  # Gap between saving cursor position to JSON in seconds
 
 fetchAmount = int(1 / refreshRate)
 
@@ -38,23 +26,35 @@ def startMenu():
     )
     input("ENTER to start recording.")
     os.system("cls")
-    print("Press ESC to stop recording.")
+    # Will be fixed with GUI
+    # Every way of getting an ESC press had a problem
+    print("Close script to end recording.")
     print("Consider setting cursor in TOP-LEFT corner.")
 
 
 startMenu()
 startText = "{{\n".format(refreshRate=refreshRate)
 
+
+def exiting(taim):
+    file.write('"lastTaim": {taim}\n}}'.format(taim=taim))
+
+
 id = taim = 0
-previousData = [-1, -1]  # impossible position, quick fix for undeclared variable error
+# impossible position, quick fix for undeclared variable error
+previousData = [-1, -1]
 
 with open("cursor-recorder.json", "w+") as file:
     file.write(startText)
-
+    atexit.register(exiting, taim)
     while True:
         # sleep for refreshRate seconds
         time.sleep(refreshRate)
-        taim = context.create_decimal_from_float(id * refreshRate)
+        # calculate current time
+        taim = Decimal(id * refreshRate)
+        # convert float to decimal using decimal module
+        taim = Decimal(taim.quantize(
+            Decimal(str(refreshRate)), rounding=ROUND_HALF_UP))
 
         # Get cursor position from pyautogui
         x, y = pyautogui.position()
@@ -73,32 +73,24 @@ with open("cursor-recorder.json", "w+") as file:
         # save cursor positions to list
         data = [x, y]
 
+        # if cursor doesn't move
         if previousData == data:
             id += 1  # don't write data, but add id
             continue
 
         previousData = data
 
-        # save id to file
+        # save taim to file
         file.write('"{}":\n'.format(taim))
 
         # dump list to json
         json.dump(data, file, indent=4)
 
-        # if ESCAPE pressed:
-        # keyboard = win + lin / experimental osx
-        try:
-            if keyboard.is_pressed("ESC"):
-                file.write(',\n"lastTaim": {taim}\n}}'.format(taim=taim))
-                break
-        except:
-            continue
-
-
         id += 1
 
         # add comma and newline in between ids
         file.write(",\n")
-
+    exiting(taim)
 print("File saved in " + str(os.getcwd()) + "\\cursor-recorder.json.")
 print("Duration of recording: {duration}".format(duration=taim))
+atexit.unregister(exiting)
