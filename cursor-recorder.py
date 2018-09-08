@@ -7,6 +7,7 @@ import re
 from decimal import *  # pylint: disable=unused-import
 
 import pyautogui
+import keyboard
 
 awareness = ctypes.c_int()
 ctypes.windll.shcore.SetProcessDpiAwareness(2)
@@ -28,6 +29,7 @@ print(
 
 fetchAmount = int(1 / refreshRate)
 
+
 def startMenu():
     print(
         "The cursor position will be fetched {} time{} a second.".format(
@@ -42,8 +44,8 @@ def startMenu():
 
 startMenu()
 startText = "{{\n".format(refreshRate=refreshRate)
-id = 0
-taim = 0
+
+id = taim = 0
 previousData = [-1, -1]  # impossible position, quick fix for undeclared variable error
 
 with open("cursor-recorder.json", "w+") as file:
@@ -84,11 +86,14 @@ with open("cursor-recorder.json", "w+") as file:
         json.dump(data, file, indent=4)
 
         # if ESCAPE pressed:
-        if msvcrt.kbhit() and msvcrt.getch() == chr(27).encode():
-            # end file
-            print("ESC HIT")
-            file.write(',\n"lastTaim": {taim}\n}}'.format(taim=taim))
-            break
+        # keyboard = win + lin / experimental osx
+        try:
+            if keyboard.is_pressed("ESC"):
+                file.write(',\n"lastTaim": {taim}\n}}'.format(taim=taim))
+                break
+        except:
+            continue
+
 
         id += 1
 
