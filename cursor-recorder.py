@@ -1,17 +1,11 @@
 import atexit
-import ctypes
 import json
-import msvcrt
 import os
 import time
-import re
 from decimal import Decimal, ROUND_HALF_UP  # pylint: disable=unused-import
 
 import pyautogui
 import keyboard
-
-# awareness = ctypes.c_int()
-# ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
 refreshRate = 0.1  # Gap between saving cursor position to JSON in seconds
 
@@ -37,8 +31,6 @@ startText = '{{\n"refreshRate": {refreshRate},\n'.format(refreshRate=refreshRate
 
 
 def lastTaim(taim):
-    # delete last comma,
-
     # add }, newline, "lastTaim": 0.1, newline }
     file.write('}},\n"lastTaim": {taim}\n}}'.format(taim=taim))
 
@@ -91,11 +83,6 @@ with open("cursor-recorder.json", "w+") as file:
 
         previousData = data
 
-        # create recording list
-        # save taim to file
-        # file.write('"{}":\n'.format(taim))
-        # dump list to json
-        # json.dump(data, file, indent=4)
         # write data:
         writeData(x, y, id, taim)
 
