@@ -1,4 +1,4 @@
-import atexit
+# import atexit
 import json
 import os
 import time
@@ -37,7 +37,7 @@ def lastTaim(taim):
 
 def writeData(x, y, id, taim):
     data = '"{id}": {{\n "taim": {taim},\n"x": {x},\n"y":{y} }}'.format(
-        id=idAll, taim=taim, x=x, y=y
+        id=id, taim=taim, x=x, y=y
     )
     file.write(data)
 
@@ -49,15 +49,12 @@ previousData = [-1, -1]
 with open("cursor-recorder.json", "w+") as file:
     file.write(startText)
     file.write('"recording":\n{\n')
-    atexit.register(lastTaim, taim)
+    # atexit.register(lastTaim, taim)
     while True:
         # sleep for refreshRate seconds
         time.sleep(refreshRate)
         idAll += 1
-        # calculate current time
-        # taim = Decimal(id * refreshRate)
-        # convert float to decimal using decimal module
-        # taim = Decimal(taim.quantize(Decimal(str(refreshRate)), rounding=ROUND_HALF_UP))
+
         taim = id * refreshRate
         # Get cursor position from pyautogui
         x, y = pyautogui.position()
@@ -65,15 +62,14 @@ with open("cursor-recorder.json", "w+") as file:
         # save cursor positions to list
         data = [x, y]
 
-        # if cursor doesn't move
         if previousData == data:
-            id += 1  # don't write data, but add id
+            # id += 1  # don't write data, but add id
             continue
 
         previousData = data
 
         # write data:
-        writeData(x, y, id, taim)
+        writeData(x, y, idAll, taim)
 
         id += 1
 
@@ -84,4 +80,4 @@ with open("cursor-recorder.json", "w+") as file:
     lastTaim(taim)
 print("File saved in " + str(os.getcwd()) + "\\cursor-recorder.json.")
 print("Duration of recording: {duration}".format(duration=taim))
-atexit.unregister(lastTaim)
+# atexit.unregister(lastTaim)
