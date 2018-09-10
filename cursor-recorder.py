@@ -22,7 +22,7 @@ def startMenu():
     os.system("cls")
     # Will be fixed with GUI
     # Every way of getting an ESC press had a problem
-    print("Press ESC to stop.")
+    print("RECORDING! Press ESC to stop.")
     print("Consider setting cursor in TOP-LEFT corner.")
 
 
@@ -51,27 +51,16 @@ with open("cursor-recorder.json", "w+") as file:
     file.write('"recording":\n{\n')
     atexit.register(lastTaim, taim)
     while True:
-        idAll += 1
         # sleep for refreshRate seconds
         time.sleep(refreshRate)
+        idAll += 1
         # calculate current time
-        taim = Decimal(id * refreshRate)
+        # taim = Decimal(id * refreshRate)
         # convert float to decimal using decimal module
-        taim = Decimal(taim.quantize(Decimal(str(refreshRate)), rounding=ROUND_HALF_UP))
-
+        # taim = Decimal(taim.quantize(Decimal(str(refreshRate)), rounding=ROUND_HALF_UP))
+        taim = id * refreshRate
         # Get cursor position from pyautogui
         x, y = pyautogui.position()
-
-        # Print current cursor position on screen
-        positionStr = (
-            "X: "
-            + str(x).rjust(4)
-            + " Y: "
-            + str(y).rjust(4)
-            + " | Duration: {}".format(taim)
-        )
-        print(positionStr, end="")
-        print("\b" * len(positionStr), end="", flush=True)
 
         # save cursor positions to list
         data = [x, y]
