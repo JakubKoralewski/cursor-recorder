@@ -28,33 +28,44 @@ def startMenu():
     os.system("cls")
     # Will be fixed with GUI
     # Every way of getting an ESC press had a problem
-    print("Close script to end recording.")
+    print("Press ESC to stop.")
     print("Consider setting cursor in TOP-LEFT corner.")
 
 
 startMenu()
-startText = "{{\n".format(refreshRate=refreshRate)
+startText = '{{\n"refreshRate": {refreshRate},\n'.format(refreshRate=refreshRate)
 
 
-def exiting(taim):
-    file.write('"lastTaim": {taim}\n}}'.format(taim=taim))
+def lastTaim(taim):
+    # delete last comma,
+
+    # add }, newline, "lastTaim": 0.1, newline }
+    file.write('}},\n"lastTaim": {taim}\n}}'.format(taim=taim))
 
 
-id = taim = 0
+def writeData(x, y, id, taim):
+    data = '"{id}": {{\n "taim": {taim},\n"x": {x},\n"y":{y} }}'.format(
+        id=idAll, taim=taim, x=x, y=y
+    )
+    file.write(data)
+
+
+id = taim = idAll = 0
 # impossible position, quick fix for undeclared variable error
 previousData = [-1, -1]
 
 with open("cursor-recorder.json", "w+") as file:
     file.write(startText)
-    atexit.register(exiting, taim)
+    file.write('"recording":\n{\n')
+    atexit.register(lastTaim, taim)
     while True:
+        idAll += 1
         # sleep for refreshRate seconds
         time.sleep(refreshRate)
         # calculate current time
         taim = Decimal(id * refreshRate)
         # convert float to decimal using decimal module
-        taim = Decimal(taim.quantize(
-            Decimal(str(refreshRate)), rounding=ROUND_HALF_UP))
+        taim = Decimal(taim.quantize(Decimal(str(refreshRate)), rounding=ROUND_HALF_UP))
 
         # Get cursor position from pyautogui
         x, y = pyautogui.position()
@@ -80,17 +91,21 @@ with open("cursor-recorder.json", "w+") as file:
 
         previousData = data
 
+        # create recording list
         # save taim to file
-        file.write('"{}":\n'.format(taim))
-
+        # file.write('"{}":\n'.format(taim))
         # dump list to json
-        json.dump(data, file, indent=4)
+        # json.dump(data, file, indent=4)
+        # write data:
+        writeData(x, y, id, taim)
 
         id += 1
 
+        if keyboard.is_pressed("esc"):
+            break
         # add comma and newline in between ids
         file.write(",\n")
-    exiting(taim)
+    lastTaim(taim)
 print("File saved in " + str(os.getcwd()) + "\\cursor-recorder.json.")
 print("Duration of recording: {duration}".format(duration=taim))
-atexit.unregister(exiting)
+atexit.unregister(lastTaim)
