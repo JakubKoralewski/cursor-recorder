@@ -9,8 +9,10 @@ from pynput.keyboard import Key, Listener
 
 
 def on_press(key):
-    print('{0} pressed'.format(
-        key))
+    if key == Key.esc:
+        global isEscHit
+        isEscHit = True
+        print('You clicked ESCAPE.')
 
 
 refreshRate = 0.1  # Gap between saving cursor position to JSON in seconds
@@ -35,6 +37,7 @@ startText = '{{\n"refreshRate": {refreshRate},\n'.format(
     refreshRate=refreshRate)
 # objId = objective Id, as in independent
 id = taim = objId = 0
+isEscHit = False
 
 
 def lastTaim(taim):
@@ -52,38 +55,39 @@ def writeData(x, y, taim):
 
 
 previousData = []
+with Listener(on_press=on_press) as listener:
+    listener.join()
+    with open("cursor-recorder.json", "w+") as file:
+        file.write(startText)
+        file.write('"recording":\n{\n')
+        while isEscHit == False:
 
-with open("cursor-recorder.json", "w+") as file:
-    file.write(startText)
-    file.write('"recording":\n{\n')
-    while True:
+            # sleep for refreshRate seconds
+            time.sleep(refreshRate)
+            id += 1
 
-        # sleep for refreshRate seconds
-        time.sleep(refreshRate)
-        id += 1
+            # Get cursor position from pyautogui
+            x, y = pyautogui.position()
 
-        # Get cursor position from pyautogui
-        x, y = pyautogui.position()
+            # save cursor positions to list
+            data = [x, y]
 
-        # save cursor positions to list
-        data = [x, y]
+            if previousData == data:
+                continue
 
-        if previousData == data:
-            continue
+            previousData = data
 
-        previousData = data
+            taim = id * refreshRate
+            # write data:
+            writeData(x, y, taim)
 
-        taim = id * refreshRate
-        # write data:
-        writeData(x, y, taim)
+            if keyboard.is_pressed("esc"):
+                break
 
-        if keyboard.is_pressed("esc"):
-            break
+            # add comma, newline in between ids
+            # but don't add it in the last one
+            file.write(",\n")
 
-        # add comma, newline in between ids
-        # but don't add it in the last one
-        file.write(",\n")
-
-    lastTaim(taim)
+        lastTaim(taim)
 print("File saved in " + str(os.getcwd()) + "\\cursor-recorder.json.")
 print("Duration of recording: {duration}".format(duration=taim))
