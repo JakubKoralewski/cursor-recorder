@@ -1,3 +1,6 @@
+"""cursor-recorder"""
+__version__ = '0.1'
+
 import json
 import os
 import time
