@@ -1,4 +1,5 @@
 // json2.js by Douglas Crockford
+//#region json2.js
 if (typeof JSON !== "object") {
   JSON = {};
 }
@@ -57,8 +58,8 @@ if (typeof JSON !== "object") {
             u.length === 0
               ? "[]"
               : gap
-                ? "[\n" + gap + u.join(",\n" + gap) + "\n" + o + "]"
-                : "[" + u.join(",") + "]";
+              ? "[\n" + gap + u.join(",\n" + gap) + "\n" + o + "]"
+              : "[" + u.join(",") + "]";
           gap = o;
           return i;
         }
@@ -87,8 +88,8 @@ if (typeof JSON !== "object") {
           u.length === 0
             ? "{}"
             : gap
-              ? "{\n" + gap + u.join(",\n" + gap) + "\n" + o + "}"
-              : "{" + u.join(",") + "}";
+            ? "{\n" + gap + u.join(",\n" + gap) + "\n" + o + "}"
+            : "{" + u.join(",") + "}";
         gap = o;
         return i;
     }
@@ -195,15 +196,17 @@ if (typeof JSON !== "object") {
     };
   }
 })();
+//#endregion
 
 //Change File Path here:
-var JsonFile = new File("F:/Kuba/python_cursor_recorder/testVideo.json");
+var file = new File(
+  "F:/projects/web/google-calendar-box-select/promo/test1.json"
+);
 var parsedData;
-if (JsonFile.open("r")) {
-  JsonFile.encoding = "UTF-8";
-  var Data = JsonFile.read();
-  parsedData = JSON.parse(Data);
-  JsonFile.close();
+if (file.open("r")) {
+  file.encoding = "UTF-8";
+  parsedData = JSON.parse(file.read());
+  file.close();
 }
 
 // Call variables
@@ -212,19 +215,19 @@ if (JsonFile.open("r")) {
 var myNull = app.project.activeItem.layers.addNull();
 myNull.name = "cursor-recorder-movement";
 
-jsonFile = parsedData;
-var recording = jsonFile.recording;
-var lastTaim = jsonFile.lastTaim;
-$.writeln("lastTaim: " + lastTaim);
+file = parsedData;
+var recording = file.data;
+/* var lastTaim = file.lastTaim;
+$.writeln("lastTaim: " + lastTaim); */
 var taim = 0;
 
-for (var i = 1; ; i++) {
+for (var i = 0; i < recording.length; i++) {
   try {
     x = recording[i].x;
     //$.writeln('x = '+x);
     y = recording[i].y;
     //$.writeln('y= '+y);
-    taim = recording[i].taim;
+    taim = recording[i].t;
     //$.writeln('taim = '+taim);
     app.project
       .item(1)
