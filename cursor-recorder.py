@@ -3,6 +3,7 @@ __version__ = "0.1"
 
 import json
 import os
+import sys
 import time
 import atexit
 
@@ -10,14 +11,6 @@ import pyautogui
 import keyboard
 
 import asyncio
-
-
-def cleanup():
-    with open("cursor-recorder.json", "r+") as file:
-        print(file.read())
-
-
-atexit.register(cleanup)
 
 
 def startMenu(refreshAmount):
@@ -32,73 +25,73 @@ def startMenu(refreshAmount):
     print("Consider setting cursor in TOP-LEFT corner.")
 
 
+def save_to_file(**kwargs):
+    times = kwargs["times"]
+    positions = kwargs["positions"]
+    refreshAmount = kwargs["refreshAmount"]
+
+    output = {"refreshAmount": refreshAmount, "times": times, "positions": positions}
+    len_times = len(times)
+    len_positions = len(positions)
+    if len_times != len_positions:
+        print(
+            f"Different number of positions and times elements!\nThere is {len_positions} positions and {len_times} len_times!"
+        )
+
+    with open("cursor-recorder.json", "w+") as file:
+        json.dump(output, file)
+
+
 def main():
-    ajdi = 0
     taim = 0
-    skipping = False
-    previousData = []
+    skipping: bool = False
+    prev_x = -1
+    prev_y = -1
     refreshAmount = 60
     refreshRate = 1 / refreshAmount
 
     startMenu(refreshAmount)
+    times = []
+    positions = []
 
-    with open("cursor-recorder.json", "w+") as file:
-        startTaim = time.time_ns()
-        file.write(f'{{"refreshAmount":{refreshAmount},"data":[')
-        while True:
+    startTaim = time.time_ns()
+    while True:
+        time.sleep(refreshRate)
 
-            # TODO: because of this exit doesn't work!!!
-            # FIXEDTODO because of this after a while it may get unsynchronized
-            #await asyncio.sleep(refreshRate)
-            time.sleep(refreshRate)
+        taim: int = (time.time_ns() - startTaim) / (10 ** 9)
 
-            ajdi += 1
-            taim = (time.time_ns() - startTaim) / (10 ** 9)
-            # Get cursor position from pyautogui
-            x, y = pyautogui.position()
+        # Get cursor position from pyautogui
+        x, y = pyautogui.position()
 
-            # save cursor positions to list
-            data = [x, y]
-
-            if previousData == data:
-                skipping = True
-                continue
-            else:
-                if skipping == True:
-                    # writeData(previousData[0], previousData[1], taim - ( 1/refreshAmount ))
-                    previousData = (
-                        f'{{"t":{taim - ( refreshRate ):.3f},"x":{x},"y":{y}}}'
-                    )
-                    file.write(previousData)
-                    if keyboard.is_pressed("esc"):
-                        break
-                    file.write(",")
-                skipping = False
-
-            previousData = data
-            data = f'{{"t":{taim:.3f},"x":{x},"y":{y}}}'
-            file.write(data)
+        if prev_x == x and prev_y == y:
+            skipping = True
 
             if keyboard.is_pressed("esc"):
                 break
+            continue
+        else:
+            if skipping == True:
+                times.append(round(taim - refreshRate, 3))
+                positions.append([prev_x, prev_y])
 
-            # add comma, newline in between ids
-            # but don't add it in the last one
-            file.write(",")
-        file.write("]}")
+                if keyboard.is_pressed("esc"):
+                    break
 
-        """ lastTaim(taim) """
+            skipping = False
+
+        prev_x = x
+        prev_y = y
+
+        times.append(taim)
+        positions.append([x, y])
+
+        if keyboard.is_pressed("esc"):
+            break
+
+    save_to_file(times=times, positions=positions, refreshAmount=refreshAmount)
     print("File saved in " + str(os.getcwd()) + "\\cursor-recorder.json.")
     print("Duration of recording: {duration}".format(duration=taim))
 
+
 main()
-""" async def listenToExit():
-    while True:
-        yield keyboard.is_pressed("esc")
 
-
-async def main():
-    await asyncio.gather(main(), listenToExit())
-
-
-asyncio.run(main()) """
