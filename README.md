@@ -9,7 +9,7 @@ Records mouse movement to .json file and opens it in After Effects.
 Saves the [`cursor-recorder.json`](cursor-recorder.json) (link to an example) file to the python script's directory. From there in After Effects:
 
 1. have a compisition open,
-2. run the [`cursor-recorder.jsx`](cursor-recorder.jsx) script,
+2. run the [`cursor-recorder.jsx`](script\cursor-recorder.jsx) script,
 3. choose the right `.json` file,
 4. ??,
 5. profit,
