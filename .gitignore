@@ -1,0 +1,6 @@
+test.py
+.idea/
+*.txt
+/.vscode
+/.vs
+
