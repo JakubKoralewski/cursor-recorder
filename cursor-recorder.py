@@ -56,9 +56,11 @@ def main():
 
         taim: int = (time.time_ns() - startTaim) / (10 ** 9)
 
-        # Get cursor position from pyautogui
+        # Get cursor position
         x, y = pyautogui.position()
 
+        # If previous position same as current
+        # no need to add same data
         if prev_x == x and prev_y == y:
             skipping = True
 
@@ -67,6 +69,8 @@ def main():
             continue
         else:
             if skipping == True:
+                # If previously was skipping
+                # create a keyframe that will stop sliding
                 times.append(round(taim - refreshRate, 3))
                 positions.append([prev_x, prev_y])
 
