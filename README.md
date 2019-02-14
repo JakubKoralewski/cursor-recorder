@@ -66,14 +66,14 @@ btw this is from [this extension](https://github.com/JakubKoralewski/google-cale
 I chose to combine the two files for releases to make it simpler to install without having to copy the *json2.jsxinc* file.
 
 
-```console
+```sh
 $ mkdir release
 $ cat script\json2.jsxinc script\cursor-recorder.jsx > release\cursor-recorder.jsx
 ```
 
 ### Python packages
 
-```console
+```sh
 $ pip install -r requirements.txt
 ```
 
