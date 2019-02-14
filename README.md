@@ -68,7 +68,8 @@ I chose to combine the two files for releases to make it simpler to install with
 
 ```bash
 mkdir release
-cat script\json2.jsxinc script\cursor-recorder.jsx > release\cursor-recorder.jsx
+sed -n '/include/!p' script/cursor-recorder.jsx > release/cursor-recorder.jsx
+cat script\json2.jsxinc release/cursor-recorder.jsx > release/cursor-recorder.jsx
 ```
 
 ### Python packages
