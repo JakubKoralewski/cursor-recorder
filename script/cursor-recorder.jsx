@@ -16,6 +16,8 @@ function main() {
 		file.encoding = "UTF-8";
 		parsedData = JSON.parse(file.read());
 		file.close();
+	} else {
+		return;
 	}
 
 	var myNull = app.project.activeItem.layers.addNull();
