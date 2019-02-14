@@ -62,11 +62,24 @@ btw this is from [this extension](https://github.com/JakubKoralewski/google-cale
 
 ## Development
 
+### Build script
+I chose to combine the two files for releases to make it simpler to install without having to copy the *json2.jsxinc* file.
+
+
+```bash
+mkdir release
+cat script\json2.jsxinc script\cursor-recorder.jsx > release\cursor-recorder.jsx
+```
+
 ### Python packages
 
 ```bash
 pip install -r requirements.txt
 ```
+
+# Credits
+
+- json2.js by Douglas Crockford
 
 # License
 [Mozilla Public License Version 2.0](LICENSE)
