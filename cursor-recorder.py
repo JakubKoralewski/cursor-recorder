@@ -3,14 +3,10 @@ __version__ = "0.1"
 
 import json
 import os
-import sys
 import time
-import atexit
 
 import pyautogui
 import keyboard
-
-import asyncio
 
 
 def startMenu(refreshAmount):
@@ -89,8 +85,8 @@ def main():
             break
 
     save_to_file(times=times, positions=positions, refreshAmount=refreshAmount)
-    print("File saved in " + str(os.getcwd()) + "\\cursor-recorder.json.")
-    print("Duration of recording: {duration}".format(duration=taim))
+    print(f"File saved in {str(os.getcwd())}\\cursor-recorder.json.")
+    print(f"Duration of recording: {taim}")
 
 
 main()
