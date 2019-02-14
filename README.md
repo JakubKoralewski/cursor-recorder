@@ -2,9 +2,9 @@
 
 Records mouse movement to .json file and opens it in After Effects.
 
-## :heavy_exclamation_mark: Demo :heavy_exclamation_mark: ([vimeo.com](https://vimeo.com/289324251))
+## :heavy_exclamation_mark: Demo :heavy_exclamation_mark: (image is a link to [vimeo.com](https://vimeo.com/289324251))
 
-[![How it works.](https://i.vimeocdn.com/video/724944159.webp)](https://vimeo.com/289324251)
+[![How it works.](https://i.imgur.com/nokmpUN.png)](https://vimeo.com/289324251)
 
 Saves the [`cursor-recorder.json`](cursor-recorder.json) (link to an example) file to the python script's directory. From there in After Effects:
 
@@ -36,29 +36,27 @@ thisComp.layer("cursor-recorder-movement").transform.position;
 ```
 
 ## Weird things you can do with this
+*The images are links to streamable.com*
 
-### you can do [this][vortex-thing-video]:
+### You can do [this][vortex-thing-video]:
 
-[![][vortex-thing-thumbnail]][vortex-thing-video]
+[<img src="https://i.imgur.com/J4mLmbn.png" height="200" />][vortex-thing-video]
 
-[vortex-thing-thumbnail]: https://i.imgur.com/J4mLmbn.png
 [vortex-thing-video]: https://streamable.com/ceebw
 
-### [this][ideas-video] can give you some ideas:
+### [This][ideas-video] can give you some ideas:
 
-[![][ideas-thumbnail]][ideas-video]
+[<img src="https://i.imgur.com/NofznGx.png" height="200" />][ideas-video]
 
-[ideas-thumbnail]: https://i.imgur.com/NofznGx.png
 [ideas-video]: https://streamable.com/zk1yi
 
-### [this][overkill-video] may seem like an overkill but I'm supposed to advertise a product so here you go:
+### [This][overkill-video] may seem like an overkill but I'm supposed to advertise a product so here you go:
 
-[![][overkill-thumbnail]][overkill-video]
+[<img src="https://i.imgur.com/HPZONha.png" height="200" />][overkill-video]
 
-btw this is from [this extension](https://github.com/JakubKoralewski/google-calendar-box-select) of mine (I'm really selling out right now)
-
-[overkill-thumbnail]: https://i.imgur.com/HPZONha.png
 [overkill-video]: https://streamable.com/rvdxr
+
+BTW this is from [this browser extension](https://github.com/JakubKoralewski/google-calendar-box-select) of mine (I'm really selling out right now)
 
 ## Development
 
