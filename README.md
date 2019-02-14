@@ -59,3 +59,14 @@ btw this is from [this extension](https://github.com/JakubKoralewski/google-cale
 
 [overkill-thumbnail]: https://i.imgur.com/HPZONha.png
 [overkill-video]: https://streamable.com/rvdxr
+
+## Development
+
+### Python packages
+
+```bash
+pip install -r requirements.txt
+```
+
+# License
+[Mozilla Public License Version 2.0](LICENSE)
