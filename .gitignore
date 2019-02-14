@@ -1,6 +1,5 @@
 test.py
-.idea/
-*.txt
+/.idea
 /.vscode
 /.vs
 
