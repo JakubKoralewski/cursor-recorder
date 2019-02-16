@@ -63,6 +63,7 @@ BTW this is from [this browser extension](https://github.com/JakubKoralewski/goo
 ### Build script
 I chose to combine the two files for releases to make it simpler to install without having to copy the *json2.jsxinc* file.
 Run to create an output file in `\release` directory.
+
 ```console
 $ sh build_script.sh
 ```

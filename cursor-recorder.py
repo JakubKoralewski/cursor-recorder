@@ -49,7 +49,9 @@ def main():
     refreshAmount = 60
     refreshRate = 1 / refreshAmount
 
+    # Display start screen
     startMenu(refreshAmount)
+
     times = []
     positions = []
 
