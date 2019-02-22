@@ -1,3 +1,10 @@
+-- This Source Code Form is subject to the terms of the Mozilla Public
+-- License, v. 2.0. If a copy of the MPL was not distributed with this
+-- file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+-- 
+-- Copyright 2019 (c) Jakub Koralewski
+
+
 local obs = _G.obslua
 local cachedSettings = {}
 
@@ -20,16 +27,18 @@ end
 
 -- A function named script_defaults will be called to set the default settings
 function _G.script_defaults(settings)
-    --[[ local profileName = obs.obs_frontend_get_current_profile()
-    print("profileName: ".. profileName)
-    local programDataPath = obs.os_get_program_data_path()
-    print("programDataPath: ".. programDataPath)
-    local configPath = programDataPath ..  ]]
-    --local defaultFilePath = obs.config_get_string('RecFilePath')
     local config = obs.obs_frontend_get_profile_config()
-    --[[ local recFilePath = obs.config_get_string(config, "RecFilePath") ]]
-    print(recFilePath)
-    obs.obs_data_set_default_string(settings, "file", script_path())
-    --[[ _G.util.config_get_string() ]]
-    -- C:\Users\Admin\AppData\Roaming\obs-studio\basic\profiles\Bez tytułu\basic.ini
+    
+    obs.obs_data_set_default_bool(settings, "enabled", true)
 end
+
+function _G.script_tick(seconds)
+    print(GetCursorPosition())
+    if obs.obs_frontend_recording_active() then
+        print("script tick")
+        
+    end
+
+end
+
+--[[ To save JSON: https://obsproject.com/docs/reference-settings.html?highlight=obs_data_create_from_json_file_safe ]]

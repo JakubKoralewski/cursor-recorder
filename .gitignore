@@ -3,4 +3,5 @@ test.py
 /.vscode
 /.vs
 /release
-
+*.egg-info
+__pycache__
