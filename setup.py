@@ -5,7 +5,7 @@ with open("README.md", "r") as f:
 
 setup(
     name='cursor-recorder',
-    version='0.1',
+    version='0.2',
     description='Records cursor data',
     license='MIT',
     long_description=long_description,
