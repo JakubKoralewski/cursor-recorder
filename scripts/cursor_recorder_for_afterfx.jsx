@@ -5,8 +5,6 @@
  * Copyright 2019 (c) Jakub Koralewski
  * */
 
-//#include "json2.jsxinc"
-
 main();
 function main() {
 	if (!app.project.activeItem) {
