@@ -8,90 +8,113 @@
 import obspython as obs
 import datetime
 import os
-import atexit
+#import atexit
 
 print(f"{datetime.datetime.now().time()}: refresh")
 
-import cursor_recorder
+#import sys
+#sys.path.insert(1, os.path.join(sys.path[0], "..", "python-script"))
 
-description = (
-    open(
-        os.path.join(
-            os.path.dirname(os.path.realpath(__file__)),
-            "obs-script",
-            "description.html",
-        ),
-        encoding="utf-8",
-        newline="",
-    )
-    .read()
-    .replace("\n", "")
-)
+import_succeeded = False
+cursor_recorder = None
+
+cached_settings = {}
+
+from pprint import pprint
+from subprocess import call
+
+
+#import pip
+""" def install(package: str, upgrade = False):
+	arguments = ['install', '--upgrade', package] if upgrade else ['install', package]
+	print(f'install arguments: {arguments}')
+	if hasattr(pip, 'main'):
+		pip.main(arguments)
+	else:
+		#FIXME: DOES NOT WORK
+		from pip._internal import main as pipmain
+		pipmain(arguments) """
+#install('pip', upgrade=True)
+
+py_interpreter = os.path.join(os.__file__.split("lib")[0], "python.exe")
+print(f'py_interpreter: {py_interpreter}')
+
+def install_pip():
+	global py_interpreter
+	call([py_interpreter, '-m', 'pip', 'install', '--upgrade', 'pip'])
+
+def install(package: str):
+	call([py_interpreter, '-m', 'pip', 'install', package])
+
+
+def import_cursor_recorder(path: str):
+	global cursor_recorder
+	install_pip()
+	import importlib.util
+	spec = importlib.util.spec_from_file_location("cursor_recorder", path)
+	too_many_tries = False
+	many_tries = 5
+	i = 0
+	last_missing_import = ''
+	while not too_many_tries:
+		try:
+			cursor_recorder = importlib.util.module_from_spec(spec)
+			spec.loader.exec_module(cursor_recorder)
+		except ImportError as e:
+			""" May happen when the cursor_recorder.py has modules that aren't present. """
+			if last_missing_import == e.name:
+				print('ERROR: Tried to import same module twice!')
+				break
+			last_missing_import = e.name
+			print(f'ERROR: No module named: {e.name}!')
+			install(e.name)
+		finally:
+			if i > many_tries:
+				too_many_tries = True
+			i += 1
+	if too_many_tries:
+		return False
+	return True
+
+#pprint(vars(obs._obspython), indent=4)
+
+
 def script_description():
-    return description
+	print('script_description')
+	return "<h1>OBS Cursor Recorder</h1><b>Lets you save your cursor movement to a JSON formatted file.</b><br/><br/>©2019 Jakub Koralewski. Open-source on GitHub.<hr />"
 
 def script_properties():
-	now = datetime(2018,1,1,0,0)
+	print('script_properties')
 	props = obs.obs_properties_create()
 	obs.obs_properties_add_bool(props, "enabled", "Enabled")
-	obs.obs_properties_add_int(props, "duration", "Recording Duration (Minutes)", 1, 120, 1)
-	st = obs.obs_properties_add_list(props, "start_time", "Record Start Time", obs.OBS_COMBO_TYPE_LIST , obs.OBS_COMBO_FORMAT_STRING)
-	obs.obs_property_list_add_string(st, "None", "None")
-	et = obs.obs_properties_add_list(props, "end_time", "Record End Time", obs.OBS_COMBO_TYPE_LIST , obs.OBS_COMBO_FORMAT_STRING)
-	for x in range(96):
-		obs.obs_property_list_add_string(st, str(datetime.time(now).strftime( "%I:%M %p")), str(datetime.time(now)))
-		obs.obs_property_list_add_string(et, str(datetime.time(now).strftime( "%I:%M %p")), str(datetime.time(now)))
-		now += timedelta(minutes=15)	
-
-	obs.obs_properties_add_bool(props, "enabled_stream", "Include Streaming")
-	obs.obs_properties_add_bool(props, "debug_mode", "Debug Mode")
+	obs.obs_properties_add_path(props, "cursor_recorder", "Cursor Recorder Python Script", obs.OBS_PATH_FILE, "*.py", "")
+	#obs.obs_properties_add_path(props, "file", "Directory to save JSON file", obs.OBS_PATH_DIRECTORY, None, "")
+	#obs.obs_properties_add_path(props, "python_path", "Copy Python Path from Python Settings", obs.OBS_PATH_DIRECTORY, '.exe', py_interpreter)
 	return props
 
 def script_save(settings):
+	print('script_save')
 	script_update(settings)
 
 def script_update(settings):
-	global Enabled_Recording
-	global Enabled_Streaming
-	global Pause_Time
-	global Recording_Start
-	global Recording_Timer
-	global Recording_End
-	global Time_To_Record
+	print('script_update')
+	#cached_settings["file"] = obs.obs_data_get_string(settings, "file")
+	cached_settings["python_path"] = obs.obs_data_get_string(settings, "python_path")
+	#print("file directory: ", cached_settings["file"])
+	cached_settings["cursor_recorder"] = obs.obs_data_get_string(settings, "cursor_recorder")
+	cached_settings["enabled"] = obs.obs_data_get_int(settings, "enabled")
+	print(f'cached_settings: {cached_settings}')
+	global import_succeeded
+	if cached_settings["cursor_recorder"] != '' and not import_succeeded:
+		if import_cursor_recorder(cached_settings["cursor_recorder"]):
+			import_succeeded = True
+			#pprint(vars(cursor_recorder), indent=2)
 
-	if obs.obs_data_get_bool(settings, "enabled") is not Enabled_Recording:
-		if obs.obs_data_get_bool(settings, "enabled") is True:
-			if Debug_Mode: print("Loading Timer")
-
-			Enabled_Recording = True
-			obs.timer_add(timer_check_recording,30000)
-		else:
-			if Debug_Mode: print("Unloading Timer")
-
-			Enabled_Recording = False
-			obs.timer_remove(timer_check_recording)
-
-	if obs.obs_data_get_int(settings, "duration") == 0:
-		Recording_Timer = 30 * 60
-	else:
-		Recording_Timer = obs.obs_data_get_int(settings, "duration") * 60
-
-	Time_To_Record = time.time() + Recording_Timer
-	if obs.obs_data_get_string(settings, "start_time") == "" or obs.obs_data_get_string(settings, "start_time") == "None" or obs.obs_data_get_string(settings, "start_time") == obs.obs_data_get_string(settings, "end_time"):
-		Recording_Start = "None"
-		obs.obs_data_set_bool(settings, "enabled_stream", False)
-		Enabled_Streaming = False
-	else:
-		Recording_Start = obs.obs_data_get_string(settings, "start_time")
-
-	if obs.obs_data_get_string(settings, "end_time") == "":
-		Recording_Start = "None"
-		obs.obs_data_set_bool(settings, "enabled_stream", False)
-		Enabled_Streaming = False
-	else:
-		Recording_End = obs.obs_data_get_string(settings, "end_time")
-	Debug_Mode = obs.obs_data_get_bool(settings, "debug_mode")
-	Enabled_Streaming = obs.obs_data_get_bool(settings, "enabled_stream")
+def script_defaults(settings):
+	print('script_defaults')
+	""" config = obs.obs_frontend_get_profile_config() """
+	obs.obs_data_set_default_bool(settings, "enabled", True)
+	#obs.obs_data_set_default_string(settings, "python_path", sys.executable)
 
 
 
