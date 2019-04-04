@@ -5,3 +5,5 @@ test.py
 /release
 *.egg-info
 __pycache__
+./cursor-recorder.json
+/.history
