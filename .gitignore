@@ -7,3 +7,5 @@ test.py
 __pycache__
 ./cursor-recorder.json
 /.history
+*.json
+*.txt
