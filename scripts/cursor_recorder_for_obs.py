@@ -11,6 +11,9 @@ from subprocess import call
 import logging
 import sys
 
+import pyautogui
+import keyboard
+
 file_handler = logging.FileHandler(filename='obs_cursor_recorder.log')
 stdout_handler = logging.StreamHandler(sys.stdout)
 handlers = [file_handler, stdout_handler]
@@ -35,12 +38,6 @@ logger.info(f'py_interpreter: {py_interpreter}')
 
 output = obs.obs_frontend_get_recording_output()
 
-import json
-import os
-
-import pyautogui
-import keyboard
-
 # Cursor positions
 x = -1
 y = -1
@@ -49,11 +46,11 @@ prev_y = -1
 seconds = 0
 skipping = False
 
-name = 'obs_cursor_recorder.json'
+name = 'obs_cursor_recorder.txt'
 path = 'C:/Users/Admin/Documents'
 
 def save_to_file(seconds, x, y):
-	full_path = os.path.join(path, name) if path and name else "cursor-recorder.json"
+	full_path = os.path.join(path, name) if path and name else "cursor-recorder.txt"
 	logger.info(f'Saving file to {full_path}')
 
 	with open(full_path, "a+") as file:
@@ -84,7 +81,7 @@ def script_tick(time_passed):
 		if skipping == True:
 			# If previously was skipping
 			# create a keyframe that will stop sliding
-			save_to_file(seconds - time_passed, x, y)
+			save_to_file(seconds - time_passed, prev_x, prev_y)
 
 		skipping = False
 
@@ -115,7 +112,7 @@ def recording_start_handler(x):
 	video_name = video_path_tuple[-1]
 
 	path = video_path_tuple[0]
-	# Convert extension to json from .flv
+	# Convert extension to txt from .flv
 	name = os.path.splitext(video_name)[0] + '.txt'
 
 def install_modules_button_click(x,y):
