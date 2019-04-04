@@ -5,7 +5,7 @@
  * Copyright 2019 (c) Jakub Koralewski
  * */
 
-#include "json2.jsxinc"
+//#include "json2.jsxinc"
 
 main();
 function main() {
@@ -15,23 +15,35 @@ function main() {
 	}
 
 	var file = new File(
-		File.openDialog("Choose a cursor recorder json.", "Files:*.json", true)
+		File.openDialog("Choose a cursor recorder json.", "Text files: *.txt", true)
 	);
-
-	var parsedData;
-	if (file.open("r")) {
-		file.encoding = "UTF-8";
-		parsedData = JSON.parse(file.read());
-		file.close();
-	} else {
+	
+	if(!file) {
+		/* User cancelled */
 		return;
 	}
 
-	var myNull = app.project.activeItem.layers.addNull();
-	myNull.name = file.name;
-
-	myNull.transform.position.setValuesAtTimes(
-		parsedData.times,
-		parsedData.positions
-	);
+	if (file.open("r")) {
+		file.encoding = "UTF-8";
+		var myNull = app.project.activeItem.layers.addNull();
+		myNull.name = file.name;
+		while(1){
+			var line = file.readln();
+			$.writeln(line);
+			if (!line) {
+				break;
+			}
+			
+			line = line.split(" ");
+			
+			myNull.transform.position.setValueAtTime(
+				line[0],
+				[line[1], line[2]]
+			);
+		}
+		file.close();
+	} else {
+		alert("There was an error opening the file!");
+		return;
+	}
 }
