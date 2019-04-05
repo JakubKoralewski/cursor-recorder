@@ -4,10 +4,11 @@
 
 Records mouse movement to a file and opens it in After Effects. Use with [OBS Studio](https://github.com/obsproject/obs-studio) as an [external Python script][cursor_recorder_for_obs] or if you prefer a more manual approach, using the [standalone Python script][cursor_recorder_standalone]. Then use the [After Effects script][cursor_recorder_for_afterfx] to import the generated cursor movement data.
 
+
 ## How to use
 
 ### With OBS (manually)
-1. Import the [cursor_recorder_for_obs.py][cursor_recorder_for_obs] in OBS. (You need to do this just once).
+1. #### Import the [cursor_recorder_for_obs.py][cursor_recorder_for_obs] in OBS. (You need to do this just once).
    1. Go to `Tools -> Scripts`.
    2. Make sure you have a Python interpreter set in your settings (`Scripts -> Python Settings`).
    3. Click the :heavy_plus_sign: icon (Add Scripts) and select the [cursor_recorder_for_obs.py][cursor_recorder_for_obs].
@@ -15,12 +16,12 @@ Records mouse movement to a file and opens it in After Effects. Use with [OBS St
    5. Click `Install Python modules` if you don't have `pyautogui` and/or `keyboard` packages installed.
 2. You're ready to start recording. The *.txt will be saved in the same place as your video with the same name.
 3. Stop the recording.
-4. Import the [cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx] in After Effects. (You need to do this just once).
+4. #### Import the [cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx] in After Effects. (You need to do this just once).
    1. Open After Effects.
    2. Go to `File -> Scripts -> Import from file`.
    3. Choose the [cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx].
    4. If the `cursor_recorder_for_afterfx.jsx` doesn't appear in `File -> Scripts` restart After Effects.
-5. Run the [cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx] script.
+5. #### Run the [cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx] script.
    1. Make sure you have a composition open.
    2. Click `File -> Scripts -> cursor_recorder_for_afterfx.jsx`.
    3. Choose the file with the cursor movement data.
