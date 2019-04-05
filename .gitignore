@@ -3,4 +3,9 @@ test.py
 /.vscode
 /.vs
 /release
-
+*.egg-info
+__pycache__
+./cursor-recorder.json
+/.history
+*.json
+*.txt
