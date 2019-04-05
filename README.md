@@ -23,7 +23,7 @@ Records mouse movement to a file and opens it in After Effects. Use with [OBS St
    2. Click `File -> Scripts -> cursor_recorder_for_afterfx.jsx`.
    3. Choose the file with the cursor movement data.
    4. Your animated null is created.
-6. Do whatever you want with it from here. Check out the [**Examples**](./README.md#Examples) section below! 
+6. Do whatever you want with it from here. Check out the [**Examples**](#examples-with-after-effects-expressions) section below! 
    
 ### Standalone
 1. Use the [cursor_recorder_standalone.py][cursor_recorder_standalone].
@@ -35,7 +35,7 @@ Records mouse movement to a file and opens it in After Effects. Use with [OBS St
 [cursor_recorder_for_afterfx]: ./scripts/cursor_recorder_for_afterfx.jsx
 [cursor_recorder_standalone]: ./scripts/cursor_recorder_standalone.py
 
-## [Examples](#examples) (with After Effects expressions):
+## Examples (with After Effects expressions):
 
 ### SMOOTH FOLLOW (that's from the demo)
 
