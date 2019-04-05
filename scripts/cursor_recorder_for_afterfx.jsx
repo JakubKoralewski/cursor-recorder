@@ -14,6 +14,10 @@ function main() {
 	if (!app.project.activeItem || app.project.activeItem === 'undefined') {
 		alert("A composition must be open and selected!");
 		return;
+	} 
+	if (app.project.activeItem.typeName != "Composition") {
+		alert("You did not select a composition, but a " + app.project.activeItem.typeName + "!");
+		return;
 	}
 
 	var file = new File(
