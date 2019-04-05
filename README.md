@@ -10,7 +10,7 @@ Records mouse movement to a file and opens it in After Effects. Use with [OBS St
 ### With OBS (manually)
 1. #### Import the [cursor_recorder_for_obs.py][cursor_recorder_for_obs] in OBS. (You need to do this just once).
    1. Go to `Tools -> Scripts`.
-   2. Make sure you have a Python interpreter set in your settings (`Scripts -> Python Settings`).
+   2. Make sure you have a Python interpreter installed and its path set in OBS' settings (`Scripts -> Python Settings`).
    3. Click the :heavy_plus_sign: icon (Add Scripts) and select the [cursor_recorder_for_obs.py][cursor_recorder_for_obs].
    4. Make sure the script is enabled. (It is by default).
    5. Click `Install Python modules` if you don't have `pyautogui` and/or `keyboard` packages installed.
