@@ -54,15 +54,23 @@ def save_to_file(seconds, x, y):
 	with open(full_path, "a+") as file:
 		file.write(f'{seconds} {x} {y}\n')
 
+x = -1
+y = -1
+prev_x = -1
+prev_y = -1
+seconds = 0
+skipping = False
+
 def script_tick(time_passed):
 	if not is_being_recorded or not cached_settings["use_default_fps"]:
 		return
-	x = -1
-	y = -1
-	prev_x = -1
-	prev_y = -1
-	seconds = 0
-	skipping = False
+	
+	global x
+	global y
+	global prev_x
+	global prev_y
+	global seconds
+	global skipping
 
 	seconds += time_passed
 
