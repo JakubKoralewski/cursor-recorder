@@ -1,21 +1,41 @@
-# cursor-recorder-for-afterfx :clapper: + :movie_camera: + :computer: + :mouse: = :sparkler: 
+# [cursor-recorder](#readme) :clapper: + :movie_camera: + :computer: + :mouse: = :sparkler: 
 
-Records mouse movement to .json file and opens it in After Effects.
+Records mouse movement to a file and opens it in After Effects. Use with [OBS Studio](https://github.com/obsproject/obs-studio) as an [external Python script][cursor_recorder_for_obs] or if you prefer a more manual approach, using the [standalone Python script][cursor_recorder_standalone]. Then use the [After Effects script][cursor_recorder_for_afterfx] to import the generated cursor movement data.
 
-## :heavy_exclamation_mark: Demo :heavy_exclamation_mark: (image is a link to [vimeo.com](https://vimeo.com/289324251))
+## How to use
 
-[![How it works.](https://i.imgur.com/nokmpUN.png)](https://vimeo.com/289324251)
+### With OBS (manually)
+1. Import the [cursor_recorder_for_obs.py][cursor_recorder_for_obs] in OBS. (You need to do this just once).
+   1. Go to `Tools -> Scripts`.
+   2. Make sure you have a Python interpreter set in your settings (`Scripts -> Python Settings`).
+   3. Click the :heavy_plus_sign: icon (Add Scripts) and select the [cursor_recorder_for_obs.py][cursor_recorder_for_obs].
+   4. Make sure the script is enabled. (It is by default).
+   5. Click `Install Python modules` if you don't have `pyautogui` and/or `keyboard` packages installed.
+2. You're ready to start recording. The *.txt will be saved in the same place as your video with the same name.
+3. Stop the recording.
+4. Import the [cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx] in After Effects. (You need to do this just once).
+   1. Open After Effects.
+   2. Go to `File -> Scripts -> Import from file`.
+   3. Choose the [cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx].
+   4. If the `cursor_recorder_for_afterfx.jsx` doesn't apper in `File -> Scripts` restart After Effects.
+5. Run the [cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx] script.
+   1. Make sure you have a composition open.
+   2. Click `File -> Scripts -> cursor_recorder_for_afterfx.jsx`.
+   3. Choose the file with the cursor movement data.
+   4. Your animated null is created.
+6. Do whatever you want with it from here. Check out the [**Examples**](./README.md#Examples) section below! 
+   
+### Standalone
+1. Use the [cursor_recorder_standalone.py][cursor_recorder_standalone].
+2. Specify `refresh_rate` variable inside the code for your needs.
+3. File with the cursor movement should get saved to the same directory as your script.
+4. Import to After Effects.
+    
+[cursor_recorder_for_obs]: ./scripts/cursor_recorder_for_obs.py
+[cursor_recorder_for_afterfx]: ./scripts/cursor_recorder_for_afterfx.jsx
+[cursor_recorder_standalone]: ./scripts/cursor_recorder_standalone.py
 
-Saves the [`cursor-recorder.json`](example-cursor-recorder.json) (link to an example) file to the python script's directory. From there in After Effects:
-
-1. have a composition open,
-2. run the [`cursor-recorder.jsx`](afterfx-script\cursor-recorder.jsx) script,
-3. choose the right `.json` file,
-4. ??,
-5. profit,
-6. you currently need to sync the mouse manually :worried:
-
-## Helpful example expressions:
+## [Examples](#examples) (with After Effects expressions):
 
 ### SMOOTH FOLLOW (that's from the demo)
 
@@ -60,23 +80,13 @@ BTW this is from [this browser extension](https://github.com/JakubKoralewski/goo
 
 ## Development
 
-### Build script
-I chose to combine the two files for releases to make it simpler to install without having to copy the *json2.jsxinc* file.
-Run to create an output file in `\release` directory.
-
-```console
-$ sh build_script.sh
-```
-
 ### Python packages
+
+The script requires: `pyautogui` and `keyboard`. Install them yourself or using this command:
 
 ```sh
 $ pip install -r requirements.txt
 ```
-
-# Credits
-
-- json2.js by Douglas Crockford
 
 # License
 [Mozilla Public License Version 2.0](LICENSE)
