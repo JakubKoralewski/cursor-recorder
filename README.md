@@ -1,4 +1,4 @@
-# [cursor-recorder](#readme) :clapper: + :movie_camera: + :computer: + :mouse: = :sparkler: 
+# cursor-recorder :clapper: + :movie_camera: + :computer: + :mouse: = :sparkler: 
 
 Records mouse movement to a file and opens it in After Effects. Use with [OBS Studio](https://github.com/obsproject/obs-studio) as an [external Python script][cursor_recorder_for_obs] or if you prefer a more manual approach, using the [standalone Python script][cursor_recorder_standalone]. Then use the [After Effects script][cursor_recorder_for_afterfx] to import the generated cursor movement data.
 
