@@ -28,7 +28,7 @@ function main() {
 	if (file.open("r")) {
 		file.encoding = "UTF-8";
 		var myNull = app.project.activeItem.layers.addNull();
-		myNull.name = file.name;
+		myNull.name = "cursor-recorder";
 		var last_time = 0;
 		while (1) {
 			var line = file.readln();
