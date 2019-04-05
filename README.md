@@ -32,7 +32,7 @@ Records mouse movement to a file and opens it in After Effects. Use with [OBS St
 1. Use the [cursor_recorder_standalone.py][cursor_recorder_standalone].
 2. Specify `refresh_rate` variable inside the code for your needs.
 3. File with the cursor movement should get saved to the same directory as your script.
-4. Import to After Effects.
+4. [Import to After Effects.](#run-the-cursor_recorder_for_afterfxjsx-script)
     
 [cursor_recorder_for_obs]: ./scripts/cursor_recorder_for_obs.py
 [cursor_recorder_for_afterfx]: ./scripts/cursor_recorder_for_afterfx.jsx
