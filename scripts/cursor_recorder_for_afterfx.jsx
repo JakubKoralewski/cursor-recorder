@@ -11,7 +11,7 @@
 
 main();
 function main() {
-	if (!app.project.activeItem) {
+	if (!app.project.activeItem || app.project.activeItem === 'undefined') {
 		alert("A composition must be open and selected!");
 		return;
 	}
