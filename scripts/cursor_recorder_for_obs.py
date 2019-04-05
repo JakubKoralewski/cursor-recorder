@@ -56,7 +56,6 @@ def save_to_file(seconds, x, y):
 	with open(full_path, "a+") as file:
 		file.write(f'{seconds} {x} {y}\n')
 	
-	logger.debug(seconds, x, y)
 	
 
 def script_tick(time_passed):
@@ -115,20 +114,17 @@ def recording_start_handler(x):
 	# Convert extension to txt from .flv
 	name = os.path.splitext(video_name)[0] + '.txt'
 
-def install_modules_button_click(x,y):
-	for module in ['pyautogui', 'keyboard']:
-		install(module)
+def install_modules_button_click(x, y):
+	install_pip_then_multiple(['pyautogui', 'keyboard'])
 
 def recording_stopped_handler(x):
 	global is_being_recorded
 	is_being_recorded = False
 	logger.info(f'recording stopped ({now()})')
 
-def install_pip():
-	call([py_interpreter, '-m', 'pip', 'install', '--upgrade', 'pip'])
-
-def install(package: str):
-	call([py_interpreter, '-m', 'pip', 'install', package])
+def install_pip_then_multiple(packages):
+	logger.info('Import pip then multiple modules.')
+	call([py_interpreter, '-m', 'pip', 'install', '--upgrade', 'pip', '--user', '&&', py_interpreter, '-m', 'pip', 'install'] + packages)
 
 def script_description():
 	logger.debug('script_description')
