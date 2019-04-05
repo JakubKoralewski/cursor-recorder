@@ -5,6 +5,10 @@
  * Copyright 2019 (c) Jakub Koralewski
  * */
 
+/* Use $.writeln('lol') to log data. 
+ * Remember not to use in production as it opens the ExtendScript toolkit when runnning the script. 
+ */
+
 main();
 function main() {
 	if (!app.project.activeItem) {
@@ -13,7 +17,7 @@ function main() {
 	}
 
 	var file = new File(
-		File.openDialog("Choose a cursor recorder json.", "Text files: *.txt", true)
+		File.openDialog("Choose a file containing the cursor movement data.", "Text files: *.txt", true)
 	);
 	
 	if(!file) {
@@ -27,7 +31,7 @@ function main() {
 		myNull.name = file.name;
 		while(1){
 			var line = file.readln();
-			$.writeln(line);
+			//$.writeln(line);
 			if (!line) {
 				break;
 			}
