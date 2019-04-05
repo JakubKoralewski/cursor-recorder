@@ -7,6 +7,8 @@ import obspython as obs
 import datetime
 import os
 from subprocess import call
+import time
+import threading
 
 import logging
 import sys
@@ -26,6 +28,7 @@ logger = logging.getLogger('obs_cursor_recorder_logger')
 
 import_succeeded = False
 cached_settings = {}
+properties = {}
 is_being_recorded = False
 
 def now():
@@ -38,13 +41,8 @@ logger.info(f'py_interpreter: {py_interpreter}')
 
 output = obs.obs_frontend_get_recording_output()
 
-# Cursor positions
-x = -1
-y = -1
-prev_x = -1
-prev_y = -1
-seconds = 0
-skipping = False
+SHOULD_EXIT = False
+
 
 name = 'obs_cursor_recorder.txt'
 path = 'C:/Users/Admin/Documents'
@@ -55,16 +53,16 @@ def save_to_file(seconds, x, y):
 
 	with open(full_path, "a+") as file:
 		file.write(f'{seconds} {x} {y}\n')
-	
-	
 
 def script_tick(time_passed):
-	if not is_being_recorded:
+	if not is_being_recorded or not cached_settings["use_default_fps"]:
 		return
-	global prev_x
-	global prev_y
-	global seconds
-	global skipping
+	x = -1
+	y = -1
+	prev_x = -1
+	prev_y = -1
+	seconds = 0
+	skipping = False
 
 	seconds += time_passed
 
@@ -88,6 +86,66 @@ def script_tick(time_passed):
 	prev_y = y
 
 	save_to_file(seconds, x, y)
+
+def should_exit():
+	if SHOULD_EXIT:
+		logger.info('should exit!')
+		return True
+	return False
+
+def cursor_recorder():
+	refresh_rate = 1 / cached_settings["custom_fps"] 
+	IS37 = True
+	try:
+		time.time_ns()
+	except AttributeError:
+		IS37 = False
+	
+	x = -1
+	y = -1
+	prev_x = -1
+	prev_y = -1
+	skipping = False
+
+	startTaim: int = time.time_ns() if IS37 else time.time()
+
+	while True:
+		time.sleep(refresh_rate)
+		if IS37:
+			taim = (time.time_ns() - startTaim) / (10 ** 9)
+		else:
+			taim = time.time() - startTaim
+
+		# Get cursor position
+
+		x, y = pyautogui.position()
+
+		# If previous position same as current
+		# no need to add same data
+		if prev_x == x and prev_y == y:
+			skipping = True
+
+			if should_exit():
+				break
+			continue
+		else:
+			if skipping == True:
+				# If previously was skipping
+				# create a keyframe that will stop sliding
+				save_to_file(round(taim - refresh_rate, 3), prev_x, prev_y)
+
+				if should_exit():
+					break
+
+			skipping = False
+
+		prev_x: int = x
+		prev_y: int = y
+
+		save_to_file(taim, x, y)
+
+		if should_exit():
+			break
 
 
 """ Registering callbacks:
@@ -114,11 +172,19 @@ def recording_start_handler(x):
 	# Convert extension to txt from .flv
 	name = os.path.splitext(video_name)[0] + '.txt'
 
+	if not cached_settings["use_default_fps"]:
+		global SHOULD_EXIT
+		SHOULD_EXIT = False
+		logger.info('Starting recording using custom FPS settings.')
+		threading.Thread(target=cursor_recorder).start()
+
 def install_modules_button_click(x, y):
 	install_pip_then_multiple(['pyautogui', 'keyboard'])
 
 def recording_stopped_handler(x):
 	global is_being_recorded
+	global SHOULD_EXIT
+	SHOULD_EXIT = True
 	is_being_recorded = False
 	logger.info(f'recording stopped ({now()})')
 
@@ -133,9 +199,25 @@ def script_description():
 def script_properties():
 	logger.debug('script_properties')
 	props = obs.obs_properties_create()
-	obs.obs_properties_add_bool(props, "enabled", "Enabled")
-	obs.obs_properties_add_button(props, "install_modules", "Install Python modules", install_modules_button_click)
+	enabled = obs.obs_properties_add_bool(props, "enabled", "Enabled")
+	obs.obs_property_set_long_description(enabled, "Whether to save the file when recording or not.")
+
+	
+	long_default_fps_description = "Use this option to achieve higher accuracy than every video frame."
+
+	default_fps = obs.obs_properties_add_bool(props, "use_default_fps", "Use video's FPS to capture cursor")
+	obs.obs_property_set_long_description(default_fps, long_default_fps_description)
+
+	custom_fps = obs.obs_properties_add_int_slider(props, "custom_fps", "Custom FPS", 1, 200, 1)
+	obs.obs_property_set_long_description(custom_fps, long_default_fps_description)
+
+	install_modules = obs.obs_properties_add_button(props, "install_modules", "Install Python modules", install_modules_button_click)
+	
+	obs.obs_property_set_long_description(install_modules, "Installs pip, pyautogui and keyboard Python modules in your specified Python interpreter.")
+
+	
 	return props
+
 
 def script_save(settings):
 	logger.debug('script_save')
@@ -143,14 +225,19 @@ def script_save(settings):
 
 def script_update(settings):
 	logger.debug('script_update')
-	cached_settings["python_path"] = obs.obs_data_get_string(settings, "python_path")
+
+	cached_settings["use_default_fps"] = obs.obs_data_get_bool(settings, "use_default_fps")
+	cached_settings["custom_fps"] = obs.obs_data_get_int(settings, "custom_fps")
 	cached_settings["enabled"] = obs.obs_data_get_bool(settings, "enabled")
-	logger.info(f'cached_settings["enabled"]: {cached_settings["enabled"]}')
+
 	if cached_settings["enabled"]:
 		logger.info('Registering start and stop handlers.')
 		signal_handler = obs.obs_output_get_signal_handler(output)
-		obs.signal_handler_connect(signal_handler, 'start', recording_start_handler)
-		obs.signal_handler_connect(signal_handler, 'stop', recording_stopped_handler)
+		try:
+			obs.signal_handler_connect(signal_handler, 'start', recording_start_handler)
+			obs.signal_handler_connect(signal_handler, 'stop', recording_stopped_handler)
+		except RuntimeError as e:
+			logger.critical(f'Disregarding error when connecting start and stop handlers: {e}')
 	else:
 		logger.info('Disconnecting start and stop handlers.')
 		signal_handler = obs.obs_output_get_signal_handler(output)
@@ -158,9 +245,13 @@ def script_update(settings):
 		if not is_being_recorded:
 			obs.signal_handler_disconnect(signal_handler, 'stop', recording_stopped_handler)
 
+	logger.debug(f'cached_settings: {cached_settings}')
+
 def script_defaults(settings):
 	logger.debug('script_defaults')
 	obs.obs_data_set_default_bool(settings, "enabled", True)
+	obs.obs_data_set_default_bool(settings, "use_default_fps", True)
+	obs.obs_data_set_default_int(settings, "custom_fps", 30)
 
 
 

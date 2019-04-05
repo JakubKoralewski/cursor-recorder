@@ -11,8 +11,12 @@
 
 main();
 function main() {
-	if (!app.project.activeItem) {
+	if (!app.project.activeItem || app.project.activeItem === 'undefined') {
 		alert("A composition must be open and selected!");
+		return;
+	} 
+	if (app.project.activeItem.typeName != "Composition") {
+		alert("You did not select a composition, but a " + app.project.activeItem.typeName + "!");
 		return;
 	}
 
@@ -28,7 +32,7 @@ function main() {
 	if (file.open("r")) {
 		file.encoding = "UTF-8";
 		var myNull = app.project.activeItem.layers.addNull();
-		myNull.name = file.name;
+		myNull.name = "cursor-recorder";
 		var last_time = 0;
 		while (1) {
 			var line = file.readln();
