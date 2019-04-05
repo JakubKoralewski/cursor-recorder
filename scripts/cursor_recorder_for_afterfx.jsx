@@ -29,15 +29,15 @@ function main() {
 		file.encoding = "UTF-8";
 		var myNull = app.project.activeItem.layers.addNull();
 		myNull.name = file.name;
-		while(1){
+		var last_time = 0;
+		while (1) {
 			var line = file.readln();
-			//$.writeln(line);
 			if (!line) {
+				myNull.outPoint = parseFloat(last_time);
 				break;
 			}
-			
 			line = line.split(" ");
-			
+			last_time = line[0];
 			myNull.transform.position.setValueAtTime(
 				line[0],
 				[line[1], line[2]]
