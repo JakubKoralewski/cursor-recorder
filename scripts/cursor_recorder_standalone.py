@@ -38,7 +38,15 @@ def exit_loop():
 	global SHOULD_EXIT
 	SHOULD_EXIT = True
 
+full_path = os.path.join(os.path.split(__file__)[0], "cursor-recorder.txt")
+
+
 def startMenu(refreshAmount):
+	file_exists = False
+
+	if os.path.isfile(full_path):
+		file_exists = True
+		print(f'This file will be overwritten if you proceed: {full_path}')
 	print(
 		"The cursor position will be fetched {} time{} a second.".format(
 			refreshAmount, "" if refreshAmount == 1 else "s"
@@ -46,6 +54,9 @@ def startMenu(refreshAmount):
 	)
 	input("ENTER to start recording.")
 	os.system("cls")
+	if file_exists:
+		os.remove(full_path)
+		print("Removed file.")
 	print("RECORDING! Press ESC to stop.")
 	print("Consider setting cursor in TOP-LEFT corner.")
 
@@ -59,18 +70,16 @@ def should_exit() -> bool:
 	return False
 
 def save_to_file(seconds, x, y):
-	full_path = "cursor-recorder.txt"
 
 	with open(full_path, "a+") as file:
 		file.write(f'{seconds} {x} {y}\n')
-	#sys.stdout.write("%d% %d% %d% \r" % (seconds, x, y) )
-	#sys.stdout.flush()
+
 	print(seconds, x, y, flush=True, end='\r')
 
 
 def main(path = None, name = None):
 	global refreshAmount
-	refreshRate: float = 1 / refreshAmount
+	refresh_rate: float = 1 / refreshAmount
 	taim: int = 0
 	skipping: bool = False
 
@@ -83,7 +92,7 @@ def main(path = None, name = None):
 	startTaim: int = time.time_ns() if IS37 else time.time()
 
 	while True:
-		time.sleep(refreshRate)
+		time.sleep(refresh_rate)
 		if IS37:
 			taim = (time.time_ns() - startTaim) / (10 ** 9)
 		else:
@@ -105,7 +114,7 @@ def main(path = None, name = None):
 			if skipping == True:
 				# If previously was skipping
 				# create a keyframe that will stop sliding
-				save_to_file(round(taim - refreshRate, 3), prev_x, prev_y)
+				save_to_file(round(taim - refresh_rate, 3), prev_x, prev_y)
 
 				if should_exit():
 					break
@@ -120,7 +129,7 @@ def main(path = None, name = None):
 		if should_exit():
 			break
 
-	print(f"File saved in {str(os.getcwd())}\\cursor-recorder.json.")
+	print(f"File saved in {full_path}")
 	print(f"Duration of recording: {taim}")
 
 if __name__ == "__main__":
