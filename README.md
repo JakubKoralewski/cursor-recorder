@@ -14,6 +14,7 @@ Records mouse movement to a file and opens it in After Effects. Use with [OBS St
    3. Click the :heavy_plus_sign: icon (Add Scripts) and select the [cursor_recorder_for_obs.py][cursor_recorder_for_obs].
    4. Make sure the script is enabled. (It is by default).
    5. Click `Install Python modules` if you don't have `pyautogui` and/or `keyboard` packages installed.
+
 2. You're ready to start recording. The *.txt will be saved in the same place as your video with the same name.
 3. Stop the recording.
 4. #### Import the [cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx] in After Effects. (You need to do this just once).
@@ -21,11 +22,13 @@ Records mouse movement to a file and opens it in After Effects. Use with [OBS St
    2. Go to `File -> Scripts -> Import from file`.
    3. Choose the [cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx].
    4. If the `cursor_recorder_for_afterfx.jsx` doesn't appear in `File -> Scripts` restart After Effects.
+   
 5. #### Run the [cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx] script.
    1. Make sure you have a composition open.
    2. Click `File -> Scripts -> cursor_recorder_for_afterfx.jsx`.
    3. Choose the file with the cursor movement data.
    4. Your animated null is created.
+   
 6. Do whatever you want with it from here. Check out the [**Examples**](#examples-with-after-effects-expressions) section below! 
    
 ### Standalone
