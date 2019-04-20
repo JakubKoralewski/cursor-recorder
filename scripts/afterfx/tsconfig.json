@@ -1,0 +1,12 @@
+{ 
+    "compilerOptions": {
+        "module": "none",
+        "noLib": true,
+        "target": "es3",
+        "outFile": "../cursor_recorder_for_afterfx.jsx",
+        "removeComments": true
+    },
+    "files": [
+        "script.ts"
+    ],
+}

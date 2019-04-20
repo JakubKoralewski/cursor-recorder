@@ -1,0 +1,15 @@
+{
+  "name": "cursor-recorder-for-afterfx",
+  "version": "0.0.1",
+  "description": "",
+  "main": "script.ts",
+  "scripts": {
+    "watch": "tsc -w",
+    "build": "tsc && cd .. && sed -i '/\\$/d' cursor_recorder_for_afterfx.jsx"
+  },
+  "author": "Jakub Koralewski",
+  "license": "MIT",
+  "dependencies": {
+    "types-for-adobe": "^1.5.0"
+  }
+}

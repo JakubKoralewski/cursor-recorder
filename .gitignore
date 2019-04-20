@@ -7,5 +7,7 @@ test.py
 __pycache__
 ./cursor-recorder.json
 /.history
-*.json
 *.txt
+node_modules
+scripts/ui.jsx
+cursor_recorder_for_afterfx.jsx
