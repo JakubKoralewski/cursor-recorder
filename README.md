@@ -20,7 +20,7 @@ Records mouse movement to a file and opens it in After Effects. Use with [OBS St
 4. #### Import the [cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx] in After Effects. (You need to do this just once).
    1. Go to the folder you installed After Effects.
    2. To be exact, go here `Adobe After Effects CC 2019\Support Files\Scripts\ScriptUI Panels`.
-   3. Place the scripts/[cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx] file in the `ScriptUI Panels` folder.
+   3. Place the scripts\\[cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx] file in the `ScriptUI Panels` folder.
    
 5. #### Run the [cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx] script.
    1. Open After Effects.
