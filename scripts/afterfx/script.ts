@@ -575,14 +575,14 @@ function addCursorRecorderNull(comp: CompItem, dataFile: File) {
 		if (dataFile.open("r")) {
 			myNull = comp.layers.addNull();
 			myNull.name = dataFile.name;
+			let lines = dataFile.read().split('\n');
+			dataFile.close();
 			let last_time: string;
-			let line: string;
-			while (true) {
-				line = dataFile.readln();
+			$.writeln("lines: ", lines);
+			for (let line of lines) {
 				let splitLine = line.split(" ");
-				if (!line) {
-					myNull.outPoint = parseFloat(last_time);
-					break;
+				if (!splitLine[2]) {
+					continue;
 				}
 				last_time = splitLine[0];
 				times.push(splitLine[0]);
