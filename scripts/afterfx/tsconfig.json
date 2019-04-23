@@ -1,9 +1,7 @@
 { 
     "compilerOptions": {
-        "module": "none",
-        "noLib": true,
         "target": "es3",
-        "outFile": "../cursor_recorder_for_afterfx.jsx",
+        "outFile": "../Cursor Recorder for After Effects.jsx",
         "removeComments": true
     },
     "files": [
