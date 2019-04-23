@@ -5,7 +5,7 @@
   "main": "script.ts",
   "scripts": {
     "watch": "tsc -w",
-    "build": "tsc && cd .. && sed -i '/\\$/d' cursor_recorder_for_afterfx.jsx"
+    "build": "tsc && cd .. && sed -i '/\\$/d' 'Cursor Recorder for After Effects.jsx' && cat afterfx/license.txt > temp.jsx && cat 'Cursor Recorder for After Effects.jsx' >> temp.jsx && mv temp.jsx 'Cursor Recorder for After Effects.jsx'"
   },
   "author": "Jakub Koralewski",
   "license": "MIT",
