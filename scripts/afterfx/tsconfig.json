@@ -1,0 +1,10 @@
+{ 
+    "compilerOptions": {
+        "target": "es3",
+        "outFile": "../Cursor Recorder for After Effects.jsx",
+        "removeComments": true
+    },
+    "files": [
+        "script.ts"
+    ],
+}
