@@ -25,11 +25,11 @@ const helpTipHelpTip = 'Get more info.';
 
 const repositoryLink = 'https://github.com/JakubKoralewski/cursor-recorder';
 
-const about = `\`Cursor Recorder for After Effects\` is only a part of the \`cursor-recorder\` project.
+/* const about = `\`Cursor Recorder for After Effects\` is only a part of the \`cursor-recorder\` project.
 The other half is the script - \`Cursor Recroder for OBS\` that lets you exactly time the start and stop of the cursor recording by getting the cursor data only when you record in OBS Studio.
 
 The project is open-source on Github at ${repositoryLink}.`;
-
+ */
 const copyrightHelpTip = `Mozilla Public License 2.0 
 If a copy of the MPL was not distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/`;
 
@@ -161,8 +161,8 @@ let currentOptionalArgs: IcurrentOptionalArg[] = [];
 			myPanel.alignment = ['center', 'center'];
 			myPanel.alignChildren = 'center';
 			myPanel.preferredSize = [400,200];
-			myPanel.helpTip = about;
-
+/* 			myPanel.helpTip = about;
+ */
 			/** Panel create Null  */
 			let pCreateNull = myPanel.add("panel", undefined, "Create Null");
 			pCreateNull.orientation = 'column';
@@ -270,13 +270,13 @@ let currentOptionalArgs: IcurrentOptionalArg[] = [];
 				addExpression(selectedExpression.index, currentOptionalArgs ? currentOptionalArgs : null);
 			}
 
-			let copyright = myPanel.add(
+			myPanel.add(
 				"edittext",
 				undefined,
 				"Copyright MPL-2.0 (c) 2019 by Jakub Koralewski"
 			); 
-			copyright.helpTip = about + '\n\n' + copyrightHelpTip;
-
+/* 			copyright.helpTip = about + '\n\n' + copyrightHelpTip;
+ */
 			let link = myPanel.add(
 				"button",
 				undefined,
@@ -329,6 +329,10 @@ function addExpression(selectedExpressionNumber: number, currentOptionalArgs?: I
 	try {
 		$.writeln("Adding expression");
 		let activeComp = getActiveComp();
+		if(!activeComp) {
+			alert("No active composition found!");
+			return;
+		}
 		let selectedExpression = EXPRESSIONS[selectedExpressionNumber];
 
 		/* Get the files needed for this expression to work. */
@@ -590,7 +594,6 @@ function addCursorRecorderNull(comp: CompItem, dataFile: File) {
 			}
 			$.writeln("last_time: ", last_time);
 			myNull.outPoint = parseFloat(last_time);
-			dataFile.close();
 		} else {
 			alert("There was an error opening the file!");
 			return;
@@ -625,10 +628,12 @@ function getStringWithoutExtension(str: string) {
  *  @author Function by UQg https://forums.adobe.com/thread/2341455  
  *  @returns {CompItem | null} If found a composition returns the composition, else null.
  * */
-function getActiveComp(): CompItem {
+function getActiveComp(): CompItem | null {
 	var comp: Item; // the returned quantity
 	var X = app.project.activeItem; // the initial activeItem  
-	var selComp = app.project.selection.length === 1 && app.project.selection[0].typeName === "Composition" ? app.project.selection[0] : null; // the unique selected comp, or null  
+	var selComp = 
+		app.project.selection.length === 1 && app.project.selection[0].typeName === "Composition" 
+			? app.project.selection[0] : null; // the unique selected comp, or null  
 	var temp: Item;
 
 	function activateCompViewer() {
