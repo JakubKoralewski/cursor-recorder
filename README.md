@@ -4,7 +4,6 @@
 
 Records mouse movement to a file and opens it in After Effects. Use with [OBS Studio](https://github.com/obsproject/obs-studio) as an [external Python script][cursor_recorder_for_obs] or if you prefer a more manual approach, using the [standalone Python script][cursor_recorder_standalone]. Then use the [After Effects script][cursor_recorder_for_afterfx] to import the generated cursor movement data.
 
-
 ## How to use
 
 ### With OBS (manually)
@@ -17,17 +16,18 @@ Records mouse movement to a file and opens it in After Effects. Use with [OBS St
 
 2. You're ready to start recording. The *.txt will be saved in the same place as your video with the same name.
 3. Stop the recording.
-4. #### Import the [cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx] in After Effects. (You need to do this just once).
+4. #### Import the [Cursor Recorder for After Effects.jsx][cursor_recorder_for_afterfx] in After Effects. (You need to do this just once).
    1. Go to the folder you installed After Effects.
-   2. To be exact, go here `Adobe After Effects CC 2019\Support Files\Scripts\ScriptUI Panels`.
-   3. Place the scripts\\[cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx] file in the `ScriptUI Panels` folder.
+   2. To be exact, go here (e.g.:`Adobe After Effects CC 2019`)`\Support Files\Scripts\ScriptUI Panels`.
+   3. Place the [Cursor Recorder for After Effects.jsx][cursor_recorder_for_afterfx] file in the `ScriptUI Panels` folder.
    
-5. #### Run the [cursor_recorder_for_afterfx.jsx][cursor_recorder_for_afterfx] script.
+5. #### Run the [Cursor Recorder for After Effects.jsx][cursor_recorder_for_afterfx] script.
    1. Open After Effects.
-   2. Go to `Window -> ` scroll down to the `cursor_recorder_for_afterfx.jsx` script and run it.
+   2. Go to `Window -> ` scroll down to the `Cursor Recorder for After Effects.jsx` script and click it.
    3. Click the help buttons for more info. 
    
-6. Do whatever you want with it from here. Check out the [**Examples**](#examples-with-after-effects-expressions) section below! 
+6. Checkout the `Add Expressions` section in the `Cursor Recorder for After Effects` script to quickly add predefined effects.
+7. Do whatever you want with it from here. Check out the [**Examples**](#examples-with-after-effects-expressions) section below! 
    
 ### Standalone
 1. Use the [cursor_recorder_standalone.py][cursor_recorder_standalone].
@@ -36,7 +36,7 @@ Records mouse movement to a file and opens it in After Effects. Use with [OBS St
 4. [Import to After Effects.](#run-the-cursor_recorder_for_afterfxjsx-script)
     
 [cursor_recorder_for_obs]: ./scripts/cursor_recorder_for_obs.py
-[cursor_recorder_for_afterfx]: ./scripts/cursor_recorder_for_afterfx.jsx
+[cursor_recorder_for_afterfx]: ./scripts/Cursor%20Recorder%20for%20After%20Effects.jsx
 [cursor_recorder_standalone]: ./scripts/cursor_recorder_standalone.py
 
 ## Examples (with After Effects expressions):
@@ -83,6 +83,25 @@ thisComp.layer("cursor-recorder-movement").transform.position;
 BTW this is from [this browser extension](https://github.com/JakubKoralewski/google-calendar-box-select) of mine (I'm really selling out right now)
 
 ## Development
+
+### After Effects script
+
+The script is developed using TypeScript. There are following commands available:
+```
+  "scripts": {
+    "watch": "tsc -w",
+    "build": "tsc && cd .. && sed -i '/\\$/d' 'Cursor Recorder for After Effects.jsx' && cat afterfx/license.txt > temp.jsx && cat 'Cursor Recorder for After Effects.jsx' >> temp.jsx && mv temp.jsx 'Cursor Recorder for After Effects.jsx'"
+  },
+```
+
+Your current directory being `scripts\afterfx`:
+
+Run `npm run watch` for auto-reload. 
+The file will get saved to `scripts\Cursor Recorder for After Effects.jsx`.
+Copy it to the ExtendScript Toolkit and run it or copy the whole file to the `ScriptUI Panels` in your After Effects installation.
+
+Run `npm run build` to have a production friendly version.
+The `"build"` script compiles the TypeScript file, removes comments and adds a copyright notice.
 
 ### Python packages
 
