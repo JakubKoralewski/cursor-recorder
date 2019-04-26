@@ -10,7 +10,7 @@ Records mouse movement to a file and opens it in After Effects. Use with [OBS St
 
 0. Download the files:
    1. cursor_recorder_for_obs.py 
-      1. from [OBS Scripts](https://obsproject.com/forum/resources/obs-cursor-recorder.789/) 
+      1. from [obsproject.com](https://obsproject.com/forum/resources/obs-cursor-recorder.789/) 
       2. or [this repository](https://raw.githubusercontent.com/JakubKoralewski/cursor-recorder/master/scripts/cursor_recorder_for_obs.py).
    2. Cursor Recorder for After Effects.jsx
       1. from aescripts.com [WIP]
