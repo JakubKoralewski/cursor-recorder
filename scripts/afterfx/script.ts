@@ -472,7 +472,6 @@ function fromTwoButtonClicked() {
 		 *  The video property is the video FootageItem.
 		 *  
 		 *  This allows for any even number of selected items.
-		 *  You can create 2, 4, 6 compositions... 
 		 */
 		let fileMappings: IFileMapping = {};
 		for (let i = 0, len = selection.length; i < len; i++) {
