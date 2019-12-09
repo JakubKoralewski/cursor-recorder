@@ -11,3 +11,4 @@ __pycache__
 node_modules
 scripts/ui.jsx
 cursor_recorder_for_afterfx.jsx
+.pytest*
