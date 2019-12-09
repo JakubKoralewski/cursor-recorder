@@ -170,11 +170,6 @@ def should_exit():
 
 def cursor_recorder():
 	refresh_rate = 1 / cached_settings["custom_fps"]
-	IS37 = True
-	try:
-		time.time_ns()
-	except AttributeError:
-		IS37 = False
 
 	x = -1
 	y = -1
@@ -182,17 +177,13 @@ def cursor_recorder():
 	prev_y = -1
 	skipping = False
 
-	startTaim: int = time.time_ns() if IS37 else time.time()
+	startTaim: int = time.time()
 
 	while True:
 		time.sleep(refresh_rate)
-		if IS37:
-			taim = (time.time_ns() - startTaim) / (10 ** 9)
-		else:
-			taim = time.time() - startTaim
+		taim = time.time() - startTaim
 
 		# Get cursor position
-
 		x, y = pyautogui.position()
 
 		# If previous position same as current
@@ -238,7 +229,7 @@ def recording_start_handler(_):
 
 	logger.info(f'recording started ({now()})')
 	output_settings = obs.obs_output_get_settings(output)
-	logger.debug(output_settings)
+	logger.debug(obs.obs_data_get_json(output_settings))
 
 	""" Example path: "C:/Users/Admin/Documents/2019-04-04 16-02-28.flv"
 	After `os.path.split(path)`: ('C:/Users/Admin/Documents', '2019-04-04 16-02-28.flv')"""
