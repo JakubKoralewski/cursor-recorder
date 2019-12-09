@@ -92,6 +92,8 @@ BTW this is from [this browser extension](https://github.com/JakubKoralewski/goo
 
 ## Development
 
+I encourage you to fork, open issues and pull requests! :heart:
+
 ### After Effects script
 
 The script is developed using TypeScript. There are following commands available:
@@ -111,13 +113,22 @@ Copy it to the ExtendScript Toolkit and run it or copy the whole file to the `Sc
 Run `npm run build` to have a production friendly version.
 The `"build"` script compiles the TypeScript file, removes comments and adds a copyright notice.
 
-### Python packages
+### Python script
+
+Currently OBS supports only 3.6.x Python interpreters!
+
+#### You need these packages
 
 The script requires: `pyautogui` and `keyboard`. Install them yourself or using this command:
 
 ```sh
 $ pip install -r requirements.txt
 ```
+
+#### Take a look at these resources:
+
+- [Official OBS Scripting Documentation](https://obsproject.com/docs/scripting.html)
+- [a raw print out of all variables, properties and methods](https://gist.github.com/JakubKoralewski/4ea2a668364134f3689864f867143a0b)
 
 # License
 [Mozilla Public License Version 2.0](LICENSE)
