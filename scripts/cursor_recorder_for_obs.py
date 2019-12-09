@@ -63,7 +63,6 @@ def install_pip_then_multiple(packages):
 	"""
 	:param name - name of action you are doing, for logging 
 	"""
-
 	def install(c: List, name: str = ""):
 		logger.info(name)
 		p = Popen(
@@ -148,7 +147,7 @@ def script_tick(time_passed):
 		skipping = True
 		return
 	else:
-		if skipping == True:
+		if skipping:
 			# If previously was skipping
 			# create a keyframe that will stop sliding
 			save_to_file(seconds - time_passed, prev_x, prev_y)
@@ -177,7 +176,7 @@ def cursor_recorder():
 	prev_y = -1
 	skipping = False
 
-	startTaim: int = time.time()
+	startTaim: float = time.time()
 
 	while True:
 		time.sleep(refresh_rate)
@@ -195,7 +194,7 @@ def cursor_recorder():
 				break
 			continue
 		else:
-			if skipping == True:
+			if skipping:
 				# If previously was skipping
 				# create a keyframe that will stop sliding
 				save_to_file(round(taim - refresh_rate, 3), prev_x, prev_y)
@@ -233,7 +232,16 @@ def recording_start_handler(_):
 
 	""" Example path: "C:/Users/Admin/Documents/2019-04-04 16-02-28.flv"
 	After `os.path.split(path)`: ('C:/Users/Admin/Documents', '2019-04-04 16-02-28.flv')"""
-	video_path_tuple = os.path.split(obs.obs_data_get_string(output_settings, "path"))
+	raw_path = obs.obs_data_get_string(output_settings, "path")
+	print(f"Raw path: '{raw_path}'")
+	if raw_path == "":
+		logging.info('Path is empty when starting recording, trying to use "url" if you\'re using FFmpeg!')
+		raw_path = obs.obs_data_get_string(output_settings, "url")
+		print(f"Raw path: '{raw_path}'")
+		if raw_path == "":
+			logging.error('Switched to "url" when "path" was not working, but still didn\'t get anything!')
+
+	video_path_tuple = os.path.split(raw_path)
 	video_name = video_path_tuple[-1]
 
 	path = video_path_tuple[0]
