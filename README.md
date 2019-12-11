@@ -117,6 +117,13 @@ The `"build"` script compiles the TypeScript file, removes comments and adds a c
 
 Currently OBS supports only 3.6.x Python interpreters!
 
+#### Debugging
+
+You can debug the Python script inside PyCharm following the instructions
+for "Python Remote Debug" as shown below:
+
+![](https://i.imgur.com/tf3DqOQ.png)
+
 #### You need these packages
 
 The script requires: `pyautogui` and `keyboard`. Install them yourself or using this command:
