@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/. 
 # Copyright 2019 (c) Jakub Koralewski
+
 import obspython as obs
 import datetime
 import os
@@ -73,7 +74,6 @@ def install_pip_then_multiple(packages):
 			executable=py_interpreter,
 			cwd=py_dir[:-1]
 		)
-		print(f"Stdout writable: {p.stdout.writable()}")
 		print(p.args)
 		out, err = p.communicate()
 		if len(err) != 0:
@@ -115,7 +115,6 @@ def save_to_file(seconds, x, y):
 
 	with open(full_path, "a+") as file:
 		file.write(f'{seconds} {x} {y}\n')
-
 
 x = -1
 y = -1
