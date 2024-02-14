@@ -6,6 +6,7 @@
 import obspython as obs
 import datetime
 import os
+
 from subprocess import Popen, PIPE
 from typing import List
 import time
@@ -13,8 +14,9 @@ import threading
 
 import logging
 import sys
+from pathlib import Path
 
-file_handler = logging.FileHandler(filename='obs_cursor_recorder.log')
+file_handler = logging.FileHandler(filename=Path.home() / 'obs_cursor_recorder.log')
 stdout_handler = logging.StreamHandler(sys.stdout)
 handlers = [file_handler, stdout_handler]
 logging.basicConfig(
@@ -26,9 +28,9 @@ logger = logging.getLogger('obs_cursor_recorder_logger')
 
 p = sys.platform
 PY_EXECUTABLE = "python.exe"
-if p in ("linux", "linux2"):
-	PY_EXECUTABLE = "python3.6"
-elif p == "win32" or p == "win64":
+if p in ("linux", "linux2", "darwin"):
+	PY_EXECUTABLE = str((Path("bin") / "python3"))
+elif p in ("win32", "win64"):
 	PY_EXECUTABLE = "python.exe"
 else:
 	logging.error(f"Unsupported platform: {p}\nWindows or Linux.")
@@ -54,7 +56,7 @@ output = obs.obs_frontend_get_recording_output()
 CUSTOM_FPS_SHOULD_EXIT = False
 
 name = 'obs_cursor_recorder.txt'
-path = 'C:/Users/Admin/Documents'
+path = Path.home()
 file = None
 
 
@@ -70,7 +72,7 @@ def install_pip_then_multiple(packages):
 			stderr=PIPE,
 			stdin=PIPE,
 			executable=py_interpreter,
-			cwd=py_dir[:-1]
+			cwd=py_dir
 		)
 		print(p.args)
 		out, err = p.communicate()
@@ -92,7 +94,7 @@ def install_pip_then_multiple(packages):
 	install(cmd_line_install, "Installing packages: ")
 
 
-def install_modules_button_click():
+def install_modules_button_click(*args):
 	install_pip_then_multiple(['pyautogui', 'keyboard'])
 
 
@@ -247,15 +249,13 @@ def recording_start_handler(_):
 		if raw_path == "":
 			logging.error('Switched to "url" when "path" was not working, but still didn\'t get anything!')
 
-	video_path_tuple = os.path.split(raw_path)
-	video_name = video_path_tuple[-1]
-
 	global path
 	global name
 	global file
-	path = video_path_tuple[0]
-	# Convert extension to txt from .flv
-	name = os.path.splitext(video_name)[0] + '.txt'
+	path = os.path.split(raw_path)[0]
+	# Convert extension to txt from .flv /mkv
+	name = os.path.splitext(raw_path)[0] + '.txt'
+	print(f"{path=} {name=}")
 	file = open(name, 'a+', encoding='UTF-8')
 	if cached_settings["use_default_fps"]:
 		init_tick_globals()
@@ -280,7 +280,9 @@ def recording_stopped_handler(_):
 	CUSTOM_FPS_SHOULD_EXIT = True
 	is_being_recorded = False
 	logger.info(f'recording stopped ({now()})')
-	file.close()
+
+	if file is not None and not file.closed:
+		file.close()
 
 
 def script_description():
