@@ -1,6 +1,6 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
 # Copyright 2019 (c) Jakub Koralewski
 
 import obspython as obs
@@ -25,11 +25,11 @@ logging.basicConfig(
 logger = logging.getLogger('obs_cursor_recorder_logger')
 
 p = sys.platform
-py_executable = "python.exe"
-if p == "linux" or p == "linux2":
-	py_executable = "python3.6"
+PY_EXECUTABLE = "python.exe"
+if p in ("linux", "linux2"):
+	PY_EXECUTABLE = "python3.6"
 elif p == "win32" or p == "win64":
-	py_executable = "python.exe"
+	PY_EXECUTABLE = "python.exe"
 else:
 	logging.error(f"Unsupported platform: {p}\nWindows or Linux.")
 del p
@@ -46,24 +46,22 @@ def now():
 
 logger.info(f"{now()}: refresh")
 py_dir = os.__file__.split("lib")[0]
-py_interpreter = os.path.join(py_dir, py_executable)
+py_interpreter = os.path.join(py_dir, PY_EXECUTABLE)
 logger.info(f'py_interpreter: {py_interpreter}')
 
 output = obs.obs_frontend_get_recording_output()
 
-SHOULD_EXIT = False
+CUSTOM_FPS_SHOULD_EXIT = False
 
 name = 'obs_cursor_recorder.txt'
 path = 'C:/Users/Admin/Documents'
+file = None
 
 
 def install_pip_then_multiple(packages):
 	logger.info('Import pip then multiple modules.')
 	assert (os.path.isdir(py_dir))
 
-	"""
-	:param name - name of action you are doing, for logging 
-	"""
 	def install(c: List, name: str = ""):
 		logger.info(name)
 		p = Popen(
@@ -81,11 +79,11 @@ def install_pip_then_multiple(packages):
 		logging.info(f"{name} Output:\n {out}")
 
 	cmd_line_update = [
-		py_executable, '-m', 'pip', 'install', '--upgrade', 'pip', '--user'
+		PY_EXECUTABLE, '-m', 'pip', 'install', '--upgrade', 'pip', '--user'
 	]
 
 	cmd_line_install = [
-		py_executable, '-m', 'pip', 'install'
+		PY_EXECUTABLE, '-m', 'pip', 'install'
 	] + packages
 
 	logger.debug(f'Python interpreter location: {py_interpreter}')
@@ -109,12 +107,12 @@ I'm installing them for you if you don't mind.\n")
 	import keyboard
 
 
-def save_to_file(seconds, x, y):
+def save_to_file(seconds: float, x: int, y: int):
 	full_path = os.path.join(path, name) if path and name else "cursor-recorder.txt"
 	logger.info(f'Saving file to {full_path}')
 
-	with open(full_path, "a+") as file:
-		file.write(f'{seconds} {x} {y}\n')
+	if not file.closed:
+		file.write(f'{round(seconds, 3)} {x} {y}\n')
 
 x = -1
 y = -1
@@ -123,17 +121,24 @@ prev_y = -1
 seconds = 0
 skipping = False
 
+def init_tick_globals():
+	global x, y, prev_x, prev_y, seconds, skipping
+	x = -1
+	y = -1
+	prev_x = -1
+	prev_y = -1
+	seconds = 0
+	skipping = False
+
 
 def script_tick(time_passed):
+	"""
+	Called on each frame by OBS. Should only run when is in default_fps. Needs to be checked.
+	"""
 	if not is_being_recorded or not cached_settings["use_default_fps"]:
 		return
 
-	global x
-	global y
-	global prev_x
-	global prev_y
-	global seconds
-	global skipping
+	global x,y,prev_x,prev_y,seconds,skipping
 
 	seconds += time_passed
 
@@ -145,13 +150,13 @@ def script_tick(time_passed):
 	if prev_x == x and prev_y == y:
 		skipping = True
 		return
-	else:
-		if skipping:
-			# If previously was skipping
-			# create a keyframe that will stop sliding
-			save_to_file(seconds - time_passed, prev_x, prev_y)
 
-		skipping = False
+	if skipping:
+		# If previously was skipping
+		# create a keyframe that will stop sliding
+		save_to_file(seconds - time_passed, prev_x, prev_y)
+
+	skipping = False
 
 	prev_x = x
 	prev_y = y
@@ -159,15 +164,19 @@ def script_tick(time_passed):
 	save_to_file(seconds, x, y)
 
 
-def should_exit():
-	if SHOULD_EXIT:
-		logger.info('should exit!')
-		return True
-	return False
-
-
 def cursor_recorder():
+	"""
+	Recording of cursor that takes place from custom_fps option. Started in handler of start of recording.
+	"""
 	refresh_rate = 1 / cached_settings["custom_fps"]
+	def should_exit():
+		"""
+		Whether cursor_recorder should exit in a given iteration.
+		"""
+		if CUSTOM_FPS_SHOULD_EXIT:
+			logger.info('should exit!')
+			return True
+		return False
 
 	x = -1
 	y = -1
@@ -175,11 +184,11 @@ def cursor_recorder():
 	prev_y = -1
 	skipping = False
 
-	startTaim: float = time.time()
+	start_time: float = time.time()
 
 	while True:
 		time.sleep(refresh_rate)
-		taim = time.time() - startTaim
+		time_ = time.time() - start_time
 
 		# Get cursor position
 		x, y = pyautogui.position()
@@ -192,45 +201,43 @@ def cursor_recorder():
 			if should_exit():
 				break
 			continue
-		else:
-			if skipping:
-				# If previously was skipping
-				# create a keyframe that will stop sliding
-				save_to_file(round(taim - refresh_rate, 3), prev_x, prev_y)
 
-				if should_exit():
-					break
+		if skipping:
+			# If previously was skipping
+			# create a keyframe that will stop sliding
+			save_to_file(time_ - refresh_rate, prev_x, prev_y)
 
-			skipping = False
+			if should_exit():
+				break
+
+		skipping = False
 
 		prev_x: int = x
 		prev_y: int = y
 
-		save_to_file(taim, x, y)
+		save_to_file(time_, x, y)
 
 		if should_exit():
 			break
 
 
-""" Registering callbacks:
-Docs:
-	- https://obsproject.com/docs/reference-outputs.html#output-signal-handler-reference
-	- https://obsproject.com/docs/frontends.html#signals 
-"""
+# Registering callbacks:
+# Docs:
+# - https://obsproject.com/docs/reference-outputs.html#output-signal-handler-reference
+# - https://obsproject.com/docs/frontends.html#signals
 
 
 def recording_start_handler(_):
-	global is_being_recorded
-	global path
-	global name
-	is_being_recorded = True
+	"""
+	Called by OBS when recording is started
+	"""
 
 	logger.info(f'recording started ({now()})')
 	output_settings = obs.obs_output_get_settings(output)
 	logger.debug(obs.obs_data_get_json(output_settings))
 
-	""" Example path: "C:/Users/Admin/Documents/2019-04-04 16-02-28.flv"
-	After `os.path.split(path)`: ('C:/Users/Admin/Documents', '2019-04-04 16-02-28.flv')"""
+	# Example path: "C:/Users/Admin/Documents/2019-04-04 16-02-28.flv"
+	# After `os.path.split(path)`: ('C:/Users/Admin/Documents', '2019-04-04 16-02-28.flv')
 	raw_path = obs.obs_data_get_string(output_settings, "path")
 	print(f"Raw path: '{raw_path}'")
 	if raw_path == "":
@@ -243,23 +250,37 @@ def recording_start_handler(_):
 	video_path_tuple = os.path.split(raw_path)
 	video_name = video_path_tuple[-1]
 
+	global path
+	global name
+	global file
 	path = video_path_tuple[0]
 	# Convert extension to txt from .flv
 	name = os.path.splitext(video_name)[0] + '.txt'
+	file = open(name, 'a+', encoding='UTF-8')
+	if cached_settings["use_default_fps"]:
+		init_tick_globals()
+
+	# Only set is_being_recorder after the path and name have been set so that the script_tick saves to correct file from the start
+	global is_being_recorded
+	is_being_recorded = True
+	global CUSTOM_FPS_SHOULD_EXIT
+	CUSTOM_FPS_SHOULD_EXIT = False
 
 	if not cached_settings["use_default_fps"]:
-		global SHOULD_EXIT
-		SHOULD_EXIT = False
 		logger.info('Starting recording using custom FPS settings.')
 		threading.Thread(target=cursor_recorder).start()
 
 
 def recording_stopped_handler(_):
+	"""
+	Called by OBS when recording stops
+	"""
 	global is_being_recorded
-	global SHOULD_EXIT
-	SHOULD_EXIT = True
+	global CUSTOM_FPS_SHOULD_EXIT
+	CUSTOM_FPS_SHOULD_EXIT = True
 	is_being_recorded = False
 	logger.info(f'recording stopped ({now()})')
+	file.close()
 
 
 def script_description():
