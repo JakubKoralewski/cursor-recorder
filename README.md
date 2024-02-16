@@ -1,4 +1,4 @@
-# cursor-recorder :clapper: + :movie_camera: + :computer: + :mouse: = :sparkler: 
+# cursor-recorder :clapper: + :movie_camera: + :computer: + :mouse: = :sparkler:
 
 <img src="docs/img/logo.png" width="80" align="left" />
 
@@ -6,43 +6,46 @@ Records mouse movement to a file and opens it in After Effects. Use with [OBS St
 
 ## How to use
 
-### With OBS 
+### With OBS
 
-0. Download the files:
-   1. cursor_recorder_for_obs.py 
-      1. from [obsproject.com](https://obsproject.com/forum/resources/obs-cursor-recorder.789/) 
-      2. or [this repository](https://raw.githubusercontent.com/JakubKoralewski/cursor-recorder/master/scripts/cursor_recorder_for_obs.py).
-   2. Cursor Recorder for After Effects.jsx
+1. Download the files:
+   1. cursor_recorder_for_obs.py
+      1. from [obsproject.com](https://obsproject.com/forum/resources/obs-cursor-recorder.789/)
+      1. or [this repository](https://raw.githubusercontent.com/JakubKoralewski/cursor-recorder/master/scripts/cursor_recorder_for_obs.py).
+   1. Cursor Recorder for After Effects.jsx
       1. from [this repository](https://github.com/JakubKoralewski/cursor-recorder/blob/master/scripts/Cursor%20Recorder%20for%20After%20Effects.jsx)
 
 1. #### Import the [cursor_recorder_for_obs.py][cursor_recorder_for_obs] in OBS. (You need to do this just once).
+   1. Windows users: @nicolasdupouymanescau recommends creating an OBS shortcut with administrator privileges:
+      I recommend the windows users to start OBS with administrator privileges by default by creating a shortcut of OBS then and ticking "always launch as administrator" in the shortcut settings.
    1. Go to `Tools -> Scripts`.
-   2. Make sure you have a Python (3.6.x) interpreter installed and its path set in OBS' settings (`Scripts -> Python Settings`).
-   3. Click the :heavy_plus_sign: icon (Add Scripts) and select the [cursor_recorder_for_obs.py][cursor_recorder_for_obs].
-   4. Make sure the script is enabled. (It is by default).
-   5. Click `Install Python modules` if you don't have `pyautogui` and/or `keyboard` packages installed.
+   1. Make sure you have a Python interpreter installed and its path set in OBS' settings (`Scripts -> Python Settings`).
+      1. For MacOS I had to make a shortcut to `/opt` by `cd ~ && ln -s /opt opt` 1. Then I could navigate through Finder dialog to pick the interpreter in `/opt/homebrew/Cellar/python@3.11/3.11.7/Frameworks`.
+   1. Click the :heavy_plus_sign: icon (Add Scripts) and select the [cursor_recorder_for_obs.py][cursor_recorder_for_obs].
+   1. Make sure the script is enabled. (It is by default).
+   1. Click `Install Python modules` if you don't have `pyautogui` and/or `keyboard` packages installed.
 
-2. You're ready to start recording. The *.txt will be saved in the same place as your video with the same name.
-3. Stop the recording.
-4. #### Import the [Cursor Recorder for After Effects.jsx][cursor_recorder_for_afterfx] in After Effects. (You need to do this just once).
+1. You're ready to start recording. The *.txt will be saved in the same place as your video with the same name.
+1. Stop the recording.
+1. #### Import the [Cursor Recorder for After Effects.jsx][cursor_recorder_for_afterfx] in After Effects. (You need to do this just once).
    1. Go to the folder you installed After Effects.
-   2. To be exact, go here (e.g.:`Adobe After Effects CC 2019`)`\Support Files\Scripts\ScriptUI Panels`.
-   3. Place the [Cursor Recorder for After Effects.jsx][cursor_recorder_for_afterfx] file in the `ScriptUI Panels` folder.
-   
-5. #### Run the [Cursor Recorder for After Effects.jsx][cursor_recorder_for_afterfx] script.
+   1. To be exact, go here (e.g.:`Adobe After Effects CC 2019`)`\Support Files\Scripts\ScriptUI Panels`.
+   1. Place the [Cursor Recorder for After Effects.jsx][cursor_recorder_for_afterfx] file in the `ScriptUI Panels` folder.
+
+1. #### Run the [Cursor Recorder for After Effects.jsx][cursor_recorder_for_afterfx] script.
    1. Open After Effects.
-   2. Go to `Window -> ` scroll down to the `Cursor Recorder for After Effects.jsx` script and click it.
-   3. Click the help buttons for more info. 
-   
-6. Checkout the `Add Expressions` section in the `Cursor Recorder for After Effects` script to quickly add predefined effects.
-7. Do whatever you want with it from here. Check out the [**Examples**](#examples-with-after-effects-expressions) section below! 
-   
+   1. Go to `Window -> ` scroll down to the `Cursor Recorder for After Effects.jsx` script and click it.
+   1. Click the help buttons for more info.
+
+1. Checkout the `Add Expressions` section in the `Cursor Recorder for After Effects` script to quickly add predefined effects.
+1. Do whatever you want with it from here. Check out the [**Examples**](#examples-with-after-effects-expressions) section below!
+
 ### Standalone
 1. Use the [cursor_recorder_standalone.py][cursor_recorder_standalone].
-2. Specify `refresh_rate` variable inside the code for your needs.
-3. File with the cursor movement should get saved to the same directory as your script.
-4. [Import to After Effects.](#run-the-cursor_recorder_for_afterfxjsx-script)
-    
+1. Specify `refresh_rate` variable inside the code for your needs.
+1. File with the cursor movement should get saved to the same directory as your script.
+1. [Import to After Effects.](#run-the-cursor_recorder_for_afterfxjsx-script)
+
 [cursor_recorder_for_obs]: ./scripts/cursor_recorder_for_obs.py
 [cursor_recorder_for_afterfx]: ./scripts/Cursor%20Recorder%20for%20After%20Effects.jsx
 [cursor_recorder_standalone]: ./scripts/cursor_recorder_standalone.py
@@ -106,7 +109,7 @@ The script is developed using TypeScript. There are following commands available
 
 Your current directory being `scripts\afterfx`:
 
-Run `npm run watch` for auto-reload. 
+Run `npm run watch` for auto-reload.
 The file will get saved to `scripts\Cursor Recorder for After Effects.jsx`.
 Copy it to the ExtendScript Toolkit and run it or copy the whole file to the `ScriptUI Panels` in your After Effects installation.
 
